@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Emergency Rescue Mobile Game - เกมฝึกคำศัพท์ ม.3</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans Thai -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Thai', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #090d16;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(239, 68, 68, 0.18) 0px, transparent 50%),
+                radial-gradient(at 85% 85%, rgba(59, 130, 246, 0.18) 0px, transparent 50%);
+            min-height: 100vh;
+            overscroll-behavior: none;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-7px); }
+            40%, 80% { transform: translateX(7px); }
+        }
+        .shake-anim {
+            animation: shake 0.35s ease-in-out;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.7); }
+        }
+        .siren-border {
+            animation: pulseGlow 2s infinite;
+        }
+        /* On-screen 50% transparent buttons */
+        .onscreen-btn {
+            opacity: 0.5;
+            transition: opacity 0.15s ease, transform 0.1s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .onscreen-btn:active, .onscreen-btn.pressed {
+            opacity: 0.85;
+            transform: scale(0.94);
+        }
+    </style>
+</head>
+<body class="text-slate-100 antialiased selection:bg-red-500 selection:text-white flex flex-col items-center justify-start py-0 sm:py-4">
+
+    <!-- Mobile Portrait App Frame (Max width 430px like modern smartphones) -->
+    <div class="w-full max-w-[430px] min-h-screen sm:min-h-[840px] bg-slate-900 sm:rounded-[36px] sm:border-[6px] sm:border-slate-800 shadow-2xl flex flex-col overflow-hidden relative">
+
+        <!-- Top Mobile Status / Navigation Bar -->
+        <nav class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-3.5 py-2.5 flex items-center justify-between z-30">
+            <a href="index.html" class="px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-arrow-left text-red-400"></i>
+                <span>ใบความรู้</span>
+            </a>
+
+            <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                <span class="font-extrabold text-sm tracking-tight text-white">Emergency Game</span>
+            </div>
+
+            <button id="soundToggleBtn" onclick="toggleSound()" class="px-2.5 py-1.5 rounded-xl font-bold text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center gap-1 transition" title="เปิด/ปิดเสียง">
+                <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+                <span id="soundText">เสียง</span>
+            </button>
+        </nav>
+
+        <!-- Mode Switcher Tabs (Compact for Mobile Portrait) -->
+        <div class="bg-slate-900 px-3 pt-2.5 pb-2 border-b border-slate-800/80">
+            <div class="grid grid-cols-2 p-1 rounded-xl bg-slate-950 border border-slate-800 gap-1">
+                <button id="tabArcade" onclick="switchMainGame('arcade')" class="py-2 rounded-lg font-extrabold text-xs transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-red-600 to-rose-600 text-white shadow">
+                    <i class="fa-solid fa-truck-medical"></i>
+                    <span>1. ขับรถกู้ภัยคำศัพท์</span>
+                </button>
+                <button id="tabQuiz" onclick="switchMainGame('quiz')" class="py-2 rounded-lg font-extrabold text-xs transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>2. สายด่วน 1669 Quiz</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- GAME 1: VERTICAL MOBILE AMBULANCE RESCUE ARCADE      -->
+        <!-- ==================================================== -->
+        <section id="arcadeSection" class="flex-1 flex flex-col px-3 pt-2 pb-3">
+            
+            <!-- Sub-Mode & High Score Row -->
+            <div class="flex items-center justify-between gap-1 mb-2">
+                <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
+                    <button id="subModeNormal" onclick="setArcadeSubMode('normal')" class="px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-indigo-600 text-white transition">
+                        🆘 แยกคำฉุกเฉิน
+                    </button>
+                    <button id="subModeTarget" onclick="setArcadeSubMode('target')" class="px-2.5 py-1 rounded-md text-[11px] font-extrabold text-slate-400 hover:text-white transition">
+                        🎯 แปลตามสั่ง (x3)
+                    </button>
+                </div>
+                <div class="text-[11px] text-slate-400 font-bold bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+                    🏆 สูงสุด: <strong id="arcadeHighScore" class="text-yellow-400">0</strong>
+                </div>
+            </div>
+
+            <!-- Compact Mission Dispatch Bar -->
+            <div id="missionBanner" class="mb-2 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 border border-indigo-500/40 rounded-xl p-2 px-3 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                    <i class="fa-solid fa-walkie-talkie text-yellow-300 text-sm animate-pulse flex-shrink-0"></i>
+                    <div class="text-xs font-extrabold text-white truncate" id="missionText">
+                        รับ <span class="text-emerald-400">คำฉุกเฉิน (+15)</span> • หลบ <span class="text-rose-400">คำทั่วไป/กรวย</span>
+                    </div>
+                </div>
+                <div id="comboBadge" class="hidden flex-shrink-0 bg-gradient-to-r from-amber-400 to-red-500 text-slate-950 font-black px-2 py-0.5 rounded-full text-[11px] shadow">
+                    x2!
+                </div>
+            </div>
+
+            <!-- Vertical Portrait Game Screen (9:15 aspect ratio) -->
+            <div id="canvasWrapper" class="relative w-full flex-1 min-h-[540px] max-h-[650px] border-2 border-slate-700 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl select-none">
+                
+                <!-- Portrait Canvas: 400 x 640 -->
+                <canvas id="gameCanvas" width="400" height="640" class="w-full h-full block"></canvas>
+                
+                <!-- Top HUD Overlay -->
+                <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none z-10">
+                    <div class="flex items-center gap-1.5">
+                        <div class="bg-slate-900/85 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-xl shadow">
+                            <span class="text-[9px] text-slate-400 font-bold block leading-none">SCORE</span>
+                            <span id="scoreDisplay" class="text-lg font-black text-yellow-400">0</span>
+                        </div>
+                        <div class="bg-slate-900/85 backdrop-blur border border-slate-700 px-2 py-1 rounded-xl shadow text-sm" id="heartsDisplay">
+                            ❤️❤️❤️
+                        </div>
+                    </div>
+
+                    <div id="shieldIndicator" class="hidden bg-yellow-400 text-slate-950 font-black text-[10px] px-2.5 py-1 rounded-full shadow animate-pulse">
+                        ⭐ SHIELD!
+                    </div>
+
+                    <div class="bg-slate-900/85 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-xl shadow text-right">
+                        <span class="text-[9px] text-slate-400 font-bold block leading-none">TIME</span>
+                        <span id="timeDisplay" class="text-lg font-black text-emerald-400">60</span><span class="text-[10px] text-slate-400 font-bold">s</span>
+                    </div>
+                </div>
+
+                <!-- ============================================================== -->
+                <!-- ON-SCREEN 50% TRANSPARENT TOUCH BUTTONS (ปุ่มกดโปร่งใส 50% บนจอ) -->
+                <!-- ============================================================== -->
+                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2.5 z-10 pointer-events-auto">
+                    <!-- Left Button (50% Transparent) -->
+                    <button id="leftBtn" class="onscreen-btn flex-1 h-16 rounded-2xl bg-slate-800/80 border-2 border-white/50 text-white text-3xl shadow-lg flex items-center justify-center touch-manipulation select-none" aria-label="Move Left">
+                        <i class="fa-solid fa-caret-left"></i>
+                    </button>
+
+                    <!-- Center Turbo Dash Button (50% Transparent) -->
+                    <button id="dashBtn" class="onscreen-btn w-20 h-16 rounded-2xl bg-amber-500/80 border-2 border-yellow-200/60 text-slate-950 font-black text-xs shadow-lg flex flex-col items-center justify-center touch-manipulation select-none" aria-label="Turbo Dash">
+                        <i class="fa-solid fa-bolt text-lg"></i>
+                        <span class="text-[10px] leading-none mt-0.5">TURBO</span>
+                    </button>
+
+                    <!-- Right Button (50% Transparent) -->
+                    <button id="rightBtn" class="onscreen-btn flex-1 h-16 rounded-2xl bg-slate-800/80 border-2 border-white/50 text-white text-3xl shadow-lg flex items-center justify-center touch-manipulation select-none" aria-label="Move Right">
+                        <i class="fa-solid fa-caret-right"></i>
+                    </button>
+                </div>
+
+                <!-- Start / Game Over Overlay -->
+                <div id="gameOverlay" class="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center text-white z-20 backdrop-blur-md p-5 text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-rose-700 flex items-center justify-center shadow-2xl mb-3 siren-border">
+                        <i class="fa-solid fa-truck-medical text-3xl text-white"></i>
+                    </div>
+                    <h3 id="overlayTitle" class="text-2xl font-black mb-1 tracking-tight">Ambulance Rescue!</h3>
+                    <p id="overlayDesc" class="mb-4 text-slate-300 text-xs leading-relaxed">
+                        กดปุ่มโปร่งใส <strong>◀ ซ้าย | ⚡ TURBO | ขวา ▶</strong> บนหน้าจอเพื่อรับคำศัพท์ฉุกเฉิน!
+                    </p>
+
+                    <!-- Compact Legend for Portrait -->
+                    <div id="overlayLegend" class="grid grid-cols-2 gap-2 w-full mb-4 text-[11px]">
+                        <div class="bg-slate-900/90 border border-emerald-500/30 p-2 rounded-xl">
+                            <div class="font-bold text-white">🆘 คำศัพท์ฉุกเฉิน</div>
+                            <div class="text-emerald-400 font-bold">+15 คะแนน & คอมโบ</div>
+                        </div>
+                        <div class="bg-slate-900/90 border border-yellow-500/30 p-2 rounded-xl">
+                            <div class="font-bold text-white">⭐ เกราะ / ⏰ เวลา</div>
+                            <div class="text-yellow-300 font-bold">อมตะ 6 วิ / +7 วินาที</div>
+                        </div>
+                        <div class="bg-slate-900/90 border border-pink-500/30 p-2 rounded-xl">
+                            <div class="font-bold text-white">💖 กล่องพยาบาล</div>
+                            <div class="text-pink-400 font-bold">เพิ่มหัวใจ +1 ดวง</div>
+                        </div>
+                        <div class="bg-slate-900/90 border border-red-500/30 p-2 rounded-xl">
+                            <div class="font-bold text-white">🚧 คำทั่วไป / กรวย</div>
+                            <div class="text-red-400 font-bold">เสียหัวใจ -1 ดวง!</div>
+                        </div>
+                    </div>
+
+                    <!-- Caught Words Review (After Game Over) -->
+                    <div id="caughtReviewBox" class="hidden w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 mb-4 max-h-32 overflow-y-auto text-left">
+                        <div class="text-[11px] font-bold text-slate-400 mb-1.5 flex items-center justify-between">
+                            <span>📋 คำศัพท์ที่ช่วยไว้ได้ (แตะเพื่อฟังเสียง):</span>
+                            <span id="caughtCountText" class="text-emerald-400"></span>
+                        </div>
+                        <div id="caughtWordsList" class="flex flex-wrap gap-1"></div>
+                    </div>
+
+                    <button id="startBtn" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white font-black text-base transition transform active:scale-95 shadow-xl border border-red-400/50 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>เริ่มปฏิบัติการกู้ภัย! (START)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================== -->
+        <!-- GAME 2: VERTICAL MOBILE 1669 DISPATCH SPEED QUIZ     -->
+        <!-- ==================================================== -->
+        <section id="quizSection" class="hidden flex-1 flex flex-col px-3.5 pt-2 pb-4">
+            <!-- Quiz Stats Bar -->
+            <div class="grid grid-cols-3 gap-2 mb-3">
+                <div class="bg-slate-950 border border-slate-800 p-2 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 font-bold block">ข้อที่</span>
+                    <span id="quizProgressText" class="text-base font-black text-white">1/10</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-2 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 font-bold block">STREAK 🔥</span>
+                    <span id="quizStreakText" class="text-base font-black text-orange-400">0</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-2 rounded-xl text-center">
+                    <span class="text-[10px] text-slate-400 font-bold block">SCORE</span>
+                    <span id="quizScoreText" class="text-base font-black text-yellow-400">0</span>
+                </div>
+            </div>
+
+            <!-- Quiz Play Area -->
+            <div id="quizPlayArea" class="flex-1 flex flex-col justify-between">
+                <div>
+                    <!-- Timer Bar -->
+                    <div class="mb-3">
+                        <div class="flex justify-between text-[11px] font-bold mb-1">
+                            <span class="text-slate-400"><i class="fa-solid fa-clock mr-1 text-red-400"></i> เวลาตัดสินใจ</span>
+                            <span id="quizTimerText" class="text-emerald-400">15 วินาที</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                            <div id="quizTimerBar" class="h-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-red-500 transition-all duration-200" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Lifelines -->
+                    <div class="grid grid-cols-3 gap-1.5 mb-3">
+                        <button id="lifeline5050" onclick="useLifeline5050()" class="py-1.5 px-2 rounded-xl text-[11px] font-extrabold bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 border border-indigo-500/40 transition flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-scissors"></i> 50:50
+                        </button>
+                        <button id="lifelineFreeze" onclick="useLifelineFreeze()" class="py-1.5 px-2 rounded-xl text-[11px] font-extrabold bg-cyan-600/30 hover:bg-cyan-600 text-cyan-200 border border-cyan-500/40 transition flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-snowflake"></i> หยุดเวลา
+                        </button>
+                        <button id="lifelineHint" onclick="useLifelineHint()" class="py-1.5 px-2 rounded-xl text-[11px] font-extrabold bg-amber-600/30 hover:bg-amber-600 text-amber-200 border border-amber-500/40 transition flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-lightbulb"></i> คำใบ้
+                        </button>
+                    </div>
+
+                    <!-- Scenario Card -->
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-4 mb-3 shadow-lg">
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="inline-flex items-center gap-1.5 bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+                                <span id="quizCallerTag">INCOMING CALL...</span>
+                            </span>
+                            <button onclick="speakCurrentQuestion()" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-indigo-600 text-white flex items-center justify-center transition" title="ฟังเสียงประโยค">
+                                <i class="fa-solid fa-volume-high text-xs"></i>
+                            </button>
+                        </div>
+
+                        <div class="text-center py-2">
+                            <div id="quizEmoji" class="text-4xl mb-2">🚗💥🚑</div>
+                            <h3 id="quizQuestionText" class="text-base font-extrabold text-white leading-snug">
+                                Loading...
+                            </h3>
+                            <p id="quizHintBox" class="hidden mt-2 inline-block bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-lg text-xs font-bold"></p>
+                        </div>
+                    </div>
+
+                    <!-- Vertical Choices List for Mobile Thumb Tapping -->
+                    <div id="quizOptionsGrid" class="space-y-2 mb-3">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Feedback & Next Button -->
+                <div id="quizFeedbackBox" class="hidden rounded-2xl p-3 border flex flex-col gap-2">
+                    <div id="quizFeedbackText" class="text-xs font-bold"></div>
+                    <button onclick="nextQuizQuestion()" class="w-full bg-white text-slate-900 hover:bg-yellow-300 font-black py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+                        <span>สายถัดไป (Next Call)</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Result Screen -->
+            <div id="quizResultArea" class="hidden flex-1 flex flex-col items-center justify-center text-center py-6">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 text-slate-950 flex items-center justify-center text-4xl mb-3 shadow-2xl">
+                    <i class="fa-solid fa-medal"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white mb-1">ภารกิจรับแจ้งเหตุสำเร็จ!</h3>
+                <p class="text-indigo-300 font-bold text-sm mb-5" id="quizRankText">ยศของคุณ: เจ้าหน้าที่กู้ภัย</p>
+                
+                <div class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mb-5 grid grid-cols-2 gap-3">
+                    <div>
+                        <span class="text-xs text-slate-400 block font-bold">คะแนนรวม</span>
+                        <span id="quizFinalScore" class="text-2xl font-black text-yellow-400">0</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block font-bold">ตอบถูก</span>
+                        <span id="quizFinalCorrect" class="text-2xl font-black text-emerald-400">0/10</span>
+                    </div>
+                </div>
+
+                <div class="w-full space-y-2.5">
+                    <button onclick="startQuizGame()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>เล่นใหม่อีกครั้ง</span>
+                    </button>
+                    <button onclick="switchMainGame('arcade')" class="w-full bg-slate-800 text-white font-bold py-3 rounded-2xl border border-slate-700 flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-truck-medical text-red-400"></i>
+                        <span>สลับไปเล่นขับรถพยาบาล</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- PORTRAIT GAME ENGINE & AUDIO SCRIPT                  -->
+    <!-- ==================================================== -->
+    <script>
+        const emergencyVocab = [
+            { word: "accident", thai: "อุบัติเหตุ", icon: "💥" },
+            { word: "fire", thai: "ไฟไหม้", icon: "🔥" },
+            { word: "earthquake", thai: "แผ่นดินไหว", icon: "🏚️" },
+            { word: "flood", thai: "น้ำท่วม", icon: "🌊" },
+            { word: "ambulance", thai: "รถพยาบาล", icon: "🚑" },
+            { word: "police", thai: "ตำรวจ", icon: "🚓" },
+            { word: "firefighter", thai: "นักดับเพลิง", icon: "🚒" },
+            { word: "emergency", thai: "เหตุฉุกเฉิน", icon: "🆘" },
+            { word: "rescue", thai: "กู้ภัย/ช่วย", icon: "🛟" },
+            { word: "injured", thai: "บาดเจ็บ", icon: "🩹" }
+        ];
+
+        const normalWords = [
+            "apple", "happy", "pencil", "banana", "rainbow", 
+            "pillow", "cookie", "guitar", "flower", "holiday", 
+            "kitten", "coffee", "picnic"
+        ];
+
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSfx(type, comboCount = 1) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+
+            // Helper to play a quick tone
+            const playTone = (freqStart, freqEnd, startTime, duration, wave = 'sine', vol = 0.25) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = wave;
+                o.frequency.setValueAtTime(freqStart, startTime);
+                if (freqEnd !== freqStart) {
+                    o.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), startTime + duration);
+                }
+                g.gain.setValueAtTime(vol, startTime);
+                g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start(startTime);
+                o.stop(startTime + duration);
+            };
+
+            // Helper to play crash/impact white noise burst
+            const playNoiseBurst = (startTime, duration, vol = 0.22) => {
+                const bufferSize = audioCtx.sampleRate * duration;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(800, startTime);
+
+                const g = audioCtx.createGain();
+                g.gain.setValueAtTime(vol, startTime);
+                g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+                noise.connect(filter);
+                filter.connect(g);
+                g.connect(audioCtx.destination);
+                noise.start(startTime);
+                noise.stop(startTime + duration);
+            };
+
+            if (type === 'good') {
+                // เอฟเฟกต์เสียงชนคำศัพท์ฉุกเฉิน (ปิ๊ง-ป่อง! ไต่ระดับเสียงตาม Combo)
+                const pitchBoost = 1 + Math.min(comboCount - 1, 6) * 0.06;
+                playTone(523.25 * pitchBoost, 587.33 * pitchBoost, now, 0.09, 'triangle', 0.28);
+                playTone(659.25 * pitchBoost, 783.99 * pitchBoost, now + 0.07, 0.11, 'triangle', 0.30);
+                playTone(1046.50 * pitchBoost, 1174.66 * pitchBoost, now + 0.14, 0.18, 'sine', 0.26);
+            } else if (type === 'bonus') {
+                // เอฟเฟกต์เสียงชนคำศัพท์ตรงภารกิจ / เก็บไอเทมพิเศษ (แฟนแฟร์ไซเรนกู้ภัย!)
+                playTone(587.33, 587.33, now, 0.08, 'square', 0.18);
+                playTone(783.99, 783.99, now + 0.07, 0.08, 'square', 0.20);
+                playTone(987.77, 987.77, now + 0.14, 0.08, 'square', 0.22);
+                playTone(1174.66, 1567.98, now + 0.21, 0.25, 'triangle', 0.30);
+            } else if (type === 'bad') {
+                // เอฟเฟกต์เสียงชนคำผิด / ชนกรวย (เสียงโครม! + ออดเตือนภัยผิดพลาด)
+                playNoiseBurst(now, 0.22, 0.30);
+                playTone(220, 110, now, 0.15, 'sawtooth', 0.28);
+                playTone(165, 75, now + 0.13, 0.24, 'sawtooth', 0.30);
+            } else if (type === 'shield_hit') {
+                // เอฟเฟกต์เสียงเกราะไซเรนสะท้อนคำผิด (เสียงโลหะ ชิ้ง!)
+                playTone(1200, 2400, now, 0.08, 'sine', 0.25);
+                playTone(1800, 900, now + 0.06, 0.14, 'triangle', 0.22);
+            } else if (type === 'dash') {
+                // เอฟเฟกต์เสียงพุ่งตัว Turbo
+                playTone(280, 720, now, 0.13, 'sine', 0.18);
+            }
+        }
+
+        let speakTimeoutId = null;
+        function speakWord(text, delayMs = 0) {
+            if (!soundEnabled || !('speechSynthesis' in window)) return;
+            clearTimeout(speakTimeoutId);
+            speakTimeoutId = setTimeout(() => {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'en-US';
+                u.rate = 0.95;
+                window.speechSynthesis.speak(u);
+            }, delayMs);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            const btn = document.getElementById('soundToggleBtn');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                btn.classList.replace('text-slate-400', 'text-emerald-400');
+            } else {
+                window.speechSynthesis && window.speechSynthesis.cancel();
+                icon.className = 'fa-solid fa-volume-xmark';
+                btn.classList.replace('text-emerald-400', 'text-slate-400');
+            }
+        }
+
+        function switchMainGame(mode) {
+            const arcadeSec = document.getElementById('arcadeSection');
+            const quizSec = document.getElementById('quizSection');
+            const tabArcade = document.getElementById('tabArcade');
+            const tabQuiz = document.getElementById('tabQuiz');
+
+            if (mode === 'arcade') {
+                arcadeSec.classList.remove('hidden');
+                quizSec.classList.add('hidden');
+                clearInterval(quizTimerId);
+                tabArcade.className = 'py-2 rounded-lg font-extrabold text-xs transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-red-600 to-rose-600 text-white shadow';
+                tabQuiz.className = 'py-2 rounded-lg font-extrabold text-xs transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-white';
+            } else {
+                if (isPlaying) endGame();
+                arcadeSec.classList.add('hidden');
+                quizSec.classList.remove('hidden');
+                tabQuiz.className = 'py-2 rounded-lg font-extrabold text-xs transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow';
+                tabArcade.className = 'py-2 rounded-lg font-extrabold text-xs transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-white';
+                startQuizGame();
+            }
+        }
+
+        // ----------------------------------------------------
+        // PORTRAIT ARCADE ENGINE (Canvas 400 x 640)
+        // ----------------------------------------------------
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const heartsDisplay = document.getElementById('heartsDisplay');
+        const gameOverlay = document.getElementById('gameOverlay');
+        const overlayTitle = document.getElementById('overlayTitle');
+        const overlayDesc = document.getElementById('overlayDesc');
+        const startBtn = document.getElementById('startBtn');
+        const comboBadge = document.getElementById('comboBadge');
+        const shieldIndicator = document.getElementById('shieldIndicator');
+        const canvasWrapper = document.getElementById('canvasWrapper');
+
+        let arcadeSubMode = 'normal';
+        let currentTargetVocab = emergencyVocab[0];
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('emerg_arcade_hi') || '0', 10);
+        document.getElementById('arcadeHighScore').textContent = highScore;
+
+        let timeLeft = 60;
+        let hearts = 3;
+        let combo = 0;
+        let isPlaying = false;
+        let shieldTimer = 0;
+        let roadOffset = 0;
+        let sirenFrame = 0;
+
+        let gameTimerId = null;
+        let spawnerId = null;
+        let items = [];
+        let floatingTexts = [];
+        let particles = [];
+        let caughtSet = new Set();
+
+        // Ambulance positioned right above the 50% transparent on-screen buttons
+        const ambulance = {
+            x: 168,
+            y: 485,
+            w: 64,
+            h: 48,
+            speed: 6.2,
+            dx: 0
+        };
+
+        function setArcadeSubMode(mode) {
+            arcadeSubMode = mode;
+            const btnNormal = document.getElementById('subModeNormal');
+            const btnTarget = document.getElementById('subModeTarget');
+            const mText = document.getElementById('missionText');
+
+            if (mode === 'normal') {
+                btnNormal.className = 'px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-indigo-600 text-white transition';
+                btnTarget.className = 'px-2.5 py-1 rounded-md text-[11px] font-extrabold text-slate-400 hover:text-white transition';
+                mText.innerHTML = `รับ <span class="text-emerald-400">คำฉุกเฉิน (+15)</span> • หลบ <span class="text-rose-400">คำทั่วไป/กรวย</span>`;
+            } else {
+                btnTarget.className = 'px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-indigo-600 text-white transition';
+                btnNormal.className = 'px-2.5 py-1 rounded-md text-[11px] font-extrabold text-slate-400 hover:text-white transition';
+                pickNewTargetWord();
+            }
+        }
+
+        function pickNewTargetWord() {
+            currentTargetVocab = emergencyVocab[Math.floor(Math.random() * emergencyVocab.length)];
+            document.getElementById('missionText').innerHTML = `🎯 รับคำว่า: <span class="bg-yellow-400 text-slate-950 px-2 py-0.5 rounded font-black">"${currentTargetVocab.thai}" ${currentTargetVocab.icon}</span> (+50!)`;
+        }
+
+        // Keyboard Controls
+        window.addEventListener('keydown', (e) => {
+            if (!isPlaying) return;
+            if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') {
+                ambulance.dx = -ambulance.speed;
+                leftBtn.classList.add('pressed');
+            }
+            if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') {
+                ambulance.dx = ambulance.speed;
+                rightBtn.classList.add('pressed');
+            }
+            if (e.code === 'Space' || e.key === 'Shift') {
+                e.preventDefault();
+                triggerTurboDash();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') {
+                if (ambulance.dx < 0) ambulance.dx = 0;
+                leftBtn.classList.remove('pressed');
+            }
+            if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') {
+                if (ambulance.dx > 0) ambulance.dx = 0;
+                rightBtn.classList.remove('pressed');
+            }
+        });
+
+        function triggerTurboDash() {
+            if (!isPlaying) return;
+            const dir = ambulance.dx !== 0 ? Math.sign(ambulance.dx) : (ambulance.x < canvas.width / 2 ? 1 : -1);
+            ambulance.x += dir * 75;
+            if (ambulance.x < 8) ambulance.x = 8;
+            if (ambulance.x + ambulance.w > canvas.width - 8) ambulance.x = canvas.width - ambulance.w - 8;
+            playSfx('dash');
+            spawnParticles(ambulance.x + ambulance.w / 2, ambulance.y + 24, '#38bdf8', 10);
+        }
+
+        // On-Screen 50% Transparent Buttons
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const dashBtn = document.getElementById('dashBtn');
+
+        const moveLeft = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            initAudio();
+            ambulance.dx = -ambulance.speed;
+            leftBtn.classList.add('pressed');
+        };
+        const moveRight = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            initAudio();
+            ambulance.dx = ambulance.speed;
+            rightBtn.classList.add('pressed');
+        };
+        const stopMove = (e) => {
+            e.preventDefault();
+            ambulance.dx = 0;
+            leftBtn.classList.remove('pressed');
+            rightBtn.classList.remove('pressed');
+        };
+
+        leftBtn.addEventListener('mousedown', moveLeft);
+        leftBtn.addEventListener('touchstart', moveLeft, { passive: false });
+        leftBtn.addEventListener('mouseup', stopMove);
+        leftBtn.addEventListener('touchend', stopMove);
+        leftBtn.addEventListener('mouseleave', stopMove);
+
+        rightBtn.addEventListener('mousedown', moveRight);
+        rightBtn.addEventListener('touchstart', moveRight, { passive: false });
+        rightBtn.addEventListener('mouseup', stopMove);
+        rightBtn.addEventListener('touchend', stopMove);
+        rightBtn.addEventListener('mouseleave', stopMove);
+
+        dashBtn.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); triggerTurboDash(); });
+        dashBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); triggerTurboDash(); }, { passive: false });
+
+        function spawnItem() {
+            if (!isPlaying) return;
+
+            const roll = Math.random();
+            let itemType = 'word';
+            let text = '';
+            let thai = '';
+            let isEmerg = false;
+            let powerType = null;
+
+            if (roll < 0.06) {
+                itemType = 'powerup';
+                powerType = 'shield';
+                text = '⭐ SHIELD';
+            } else if (roll < 0.11) {
+                itemType = 'powerup';
+                powerType = 'time';
+                text = '⏰ +7s';
+            } else if (roll < 0.14 && hearts < 3) {
+                itemType = 'powerup';
+                powerType = 'heart';
+                text = '💖 HEAL';
+            } else if (roll < 0.21) {
+                itemType = 'obstacle';
+                text = '🚧 CONE';
+            } else {
+                isEmerg = Math.random() > 0.36;
+                if (isEmerg) {
+                    let v;
+                    if (arcadeSubMode === 'target' && Math.random() < 0.45) {
+                        v = currentTargetVocab;
+                    } else {
+                        v = emergencyVocab[Math.floor(Math.random() * emergencyVocab.length)];
+                    }
+                    text = v.word;
+                    thai = v.thai;
+                } else {
+                    text = normalWords[Math.floor(Math.random() * normalWords.length)];
+                }
+            }
+
+            ctx.font = "bold 18px Inter, Noto Sans Thai, sans-serif";
+            const textW = ctx.measureText(text).width;
+            const pillW = textW + 22;
+            const spawnX = Math.random() * (canvas.width - pillW - 20) + 10;
+
+            items.push({
+                x: spawnX,
+                y: -35,
+                text: text,
+                thai: thai,
+                itemType: itemType,
+                isEmergency: isEmerg,
+                powerType: powerType,
+                speed: 2.3 + Math.random() * 2.1 + (score > 150 ? 0.5 : 0),
+                width: pillW
+            });
+        }
+
+        function addFloatingText(text, x, y, color) {
+            const clampedX = Math.min(Math.max(15, x), canvas.width - 130);
+            floatingTexts.push({ text, x: clampedX, y, color, alpha: 1, dy: -1.8 });
+        }
+
+        function spawnParticles(x, y, color, count = 12) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const spd = 1.5 + Math.random() * 4;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * spd,
+                    vy: Math.sin(angle) * spd,
+                    r: 2.5 + Math.random() * 2.5,
+                    color,
+                    alpha: 1
+                });
+            }
+        }
+
+        function updateHeartsUI() {
+            heartsDisplay.textContent = '❤️'.repeat(Math.max(0, hearts)) + '🖤'.repeat(Math.max(0, 3 - hearts));
+        }
+
+        function updateComboUI() {
+            if (combo >= 2) {
+                comboBadge.classList.remove('hidden');
+                comboBadge.textContent = combo >= 5 ? `🔥 FEVER x${combo}!` : `COMBO x${combo}`;
+            } else {
+                comboBadge.classList.add('hidden');
+            }
+        }
+
+        function startGame() {
+            initAudio();
+            score = 0;
+            timeLeft = 60;
+            hearts = 3;
+            combo = 0;
+            shieldTimer = 0;
+            items = [];
+            floatingTexts = [];
+            particles = [];
+            caughtSet.clear();
+
+            ambulance.x = canvas.width / 2 - ambulance.w / 2;
+            ambulance.dx = 0;
+            isPlaying = true;
+
+            if (arcadeSubMode === 'target') pickNewTargetWord();
+
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = timeLeft;
+            updateHeartsUI();
+            updateComboUI();
+            shieldIndicator.classList.add('hidden');
+            gameOverlay.classList.add('hidden');
+
+            clearInterval(gameTimerId);
+            clearInterval(spawnerId);
+
+            gameTimerId = setInterval(() => {
+                timeLeft--;
+                timeDisplay.textContent = timeLeft;
+                if (shieldTimer > 0) {
+                    shieldTimer--;
+                    if (shieldTimer <= 0) shieldIndicator.classList.add('hidden');
+                }
+                if (timeLeft <= 0) endGame();
+            }, 1000);
+
+            spawnerId = setInterval(spawnItem, 900);
+        }
+
+        function endGame() {
+            isPlaying = false;
+            clearInterval(gameTimerId);
+            clearInterval(spawnerId);
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('emerg_arcade_hi', String(highScore));
+                document.getElementById('arcadeHighScore').textContent = highScore;
+            }
+
+            let rank = "🥉 อาสาสมัครฝึกหัด";
+            if (score >= 280) rank = "🏆 ผู้บัญชาการกู้ภัยสูงสุด";
+            else if (score >= 160) rank = "🥇 ฮีโร่กู้ชีพฉุกเฉิน";
+            else if (score >= 80) rank = "🥈 เจ้าหน้าที่ปฏิบัติการ";
+
+            overlayTitle.textContent = hearts <= 0 ? "รถพยาบาลเสียหาย!" : "หมดเวลาปฏิบัติการ!";
+            overlayDesc.innerHTML = `คะแนนที่ได้: <span class="text-yellow-400 font-black text-xl">${score}</span> คะแนน<br><span class="text-indigo-300 font-bold text-xs">${rank}</span>`;
+            
+            const reviewBox = document.getElementById('caughtReviewBox');
+            const listEl = document.getElementById('caughtWordsList');
+            const countEl = document.getElementById('caughtCountText');
+            const caughtArr = Array.from(caughtSet);
+            
+            if (caughtArr.length > 0) {
+                reviewBox.classList.remove('hidden');
+                countEl.textContent = `${caughtArr.length}/10 คำ`;
+                listEl.innerHTML = caughtArr.map(w => {
+                    const info = emergencyVocab.find(v => v.word === w);
+                    return `<button onclick="speakWord('${w}')" class="bg-slate-800 hover:bg-indigo-600 text-[11px] font-bold px-2 py-0.5 rounded-lg border border-slate-700 transition flex items-center gap-1">
+                        <span>${info ? info.icon : '🔊'} ${w}</span>
+                        <span class="text-slate-400">(${info ? info.thai : ''})</span>
+                    </button>`;
+                }).join('');
+            } else {
+                reviewBox.classList.add('hidden');
+            }
+
+            startBtn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> <span>เล่นใหม่อีกครั้ง (Play Again)</span>`;
+            gameOverlay.classList.remove('hidden');
+        }
+
+        startBtn.addEventListener('click', startGame);
+
+        function updateArcade() {
+            if (!isPlaying) return;
+
+            roadOffset = (roadOffset + 5) % 60;
+            sirenFrame++;
+
+            const spdMult = shieldTimer > 0 ? 1.25 : 1;
+            ambulance.x += ambulance.dx * spdMult;
+            if (ambulance.x < 8) ambulance.x = 8;
+            if (ambulance.x + ambulance.w > canvas.width - 8) ambulance.x = canvas.width - ambulance.w - 8;
+
+            for (let i = 0; i < items.length; i++) {
+                const it = items[i];
+                it.y += it.speed;
+
+                if (
+                    it.x - 8 < ambulance.x + ambulance.w &&
+                    it.x + it.width - 8 > ambulance.x &&
+                    it.y + 26 > ambulance.y &&
+                    it.y < ambulance.y + ambulance.h
+                ) {
+                    if (it.itemType === 'powerup') {
+                        playSfx('bonus');
+                        spawnParticles(it.x + it.width / 2, it.y, '#facc15', 16);
+                        if (it.powerType === 'shield') {
+                            shieldTimer = 6;
+                            shieldIndicator.classList.remove('hidden');
+                            addFloatingText('⭐ SHIELD 6s!', it.x, it.y, '#facc15');
+                        } else if (it.powerType === 'time') {
+                            timeLeft += 7;
+                            timeDisplay.textContent = timeLeft;
+                            addFloatingText('⏰ +7s TIME!', it.x, it.y, '#38bdf8');
+                        } else if (it.powerType === 'heart') {
+                            hearts = Math.min(3, hearts + 1);
+                            updateHeartsUI();
+                            addFloatingText('💖 +1 HEART!', it.x, it.y, '#f472b6');
+                        }
+                    } else if (it.itemType === 'obstacle') {
+                        if (shieldTimer > 0) {
+                            playSfx('shield_hit');
+                            addFloatingText('🛡️ BLOCKED!', it.x, it.y, '#facc15');
+                        } else {
+                            playSfx('bad');
+                            hearts--;
+                            combo = 0;
+                            updateHeartsUI();
+                            updateComboUI();
+                            canvasWrapper.classList.remove('shake-anim');
+                            void canvasWrapper.offsetWidth;
+                            canvasWrapper.classList.add('shake-anim');
+                            addFloatingText('🚧 ชนกรวย! -1 ❤️', it.x, it.y, '#ef4444');
+                            if (hearts <= 0) {
+                                endGame();
+                                return;
+                            }
+                        }
+                    } else {
+                        if (it.isEmergency) {
+                            combo++;
+                            caughtSet.add(it.text);
+                            const comboBonus = Math.min(combo, 5) * 5;
+                            let pts = 10 + comboBonus;
+
+                            if (arcadeSubMode === 'target' && it.text === currentTargetVocab.word) {
+                                pts += 35;
+                                playSfx('bonus');
+                                addFloatingText(`🎯 +${pts} (${it.thai})`, it.x, it.y, '#facc15');
+                                spawnParticles(it.x + it.width / 2, it.y, '#facc15', 20);
+                                pickNewTargetWord();
+                            } else {
+                                playSfx('good', combo);
+                                addFloatingText(`+${pts} ${it.thai}`, it.x, it.y, '#4ade80');
+                                spawnParticles(it.x + it.width / 2, it.y, '#4ade80', 12);
+                            }
+
+                            score += pts;
+                            scoreDisplay.textContent = score;
+                            updateComboUI();
+                            speakWord(it.text, 220);
+                        } else {
+                            if (shieldTimer > 0) {
+                                playSfx('shield_hit');
+                                addFloatingText(`🛡️ Protected`, it.x, it.y, '#facc15');
+                            } else {
+                                playSfx('bad');
+                                score = Math.max(0, score - 10);
+                                hearts--;
+                                combo = 0;
+                                scoreDisplay.textContent = score;
+                                updateHeartsUI();
+                                updateComboUI();
+                                canvasWrapper.classList.remove('shake-anim');
+                                void canvasWrapper.offsetWidth;
+                                canvasWrapper.classList.add('shake-anim');
+                                addFloatingText(`❌ ${it.text} -1 ❤️`, it.x, it.y, '#f87171');
+                                spawnParticles(it.x + it.width / 2, it.y, '#ef4444', 12);
+                                if (hearts <= 0) {
+                                    endGame();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    items.splice(i, 1);
+                    i--;
+                    continue;
+                }
+
+                if (it.y > canvas.height + 30) {
+                    items.splice(i, 1);
+                    i--;
+                }
+            }
+
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y += ft.dy;
+                ft.alpha -= 0.024;
+                if (ft.alpha <= 0) floatingTexts.splice(i, 1);
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.032;
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function drawArcade() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Portrait Sky Gradient
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, 515);
+            skyGrad.addColorStop(0, '#090d16');
+            skyGrad.addColorStop(1, '#1e293b');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, 515);
+
+            // Background City Silhouette
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+            const buildings = [
+                [10, 360, 55, 155], [75, 320, 65, 195], [150, 380, 50, 135],
+                [210, 300, 70, 215], [290, 350, 55, 165], [350, 330, 45, 185]
+            ];
+            for (const [bx, by, bw, bh] of buildings) {
+                ctx.fillRect(bx, by, bw, bh);
+            }
+
+            // Road surface (y = 515 to 640)
+            ctx.fillStyle = "#334155";
+            ctx.fillRect(0, 515, canvas.width, 125);
+            ctx.fillStyle = "#ef4444";
+            ctx.fillRect(0, 515, canvas.width, 4);
+
+            // Moving Road Dashes
+            ctx.fillStyle = "#facc15";
+            for (let i = -60; i < canvas.width + 60; i += 60) {
+                ctx.fillRect(i + roadOffset, 542, 32, 6);
+            }
+
+            // Siren Glow behind Ambulance
+            const isRedGlow = Math.floor(sirenFrame / 10) % 2 === 0;
+            const glowGrad = ctx.createRadialGradient(
+                ambulance.x + 28, ambulance.y + 20, 4,
+                ambulance.x + 28, ambulance.y + 20, 48
+            );
+            glowGrad.addColorStop(0, isRedGlow ? 'rgba(239, 68, 68, 0.5)' : 'rgba(59, 130, 246, 0.5)');
+            glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = glowGrad;
+            ctx.beginPath();
+            ctx.arc(ambulance.x + 28, ambulance.y + 20, 48, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Shield Circle
+            if (shieldTimer > 0) {
+                ctx.strokeStyle = "#facc15";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(ambulance.x + 28, ambulance.y + 20, 40, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Draw Ambulance
+            ctx.font = "50px Arial";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            ctx.fillText("🚑", ambulance.x, ambulance.y - 6);
+
+            // Draw Falling Words & Powerups
+            for (const it of items) {
+                ctx.beginPath();
+                if (it.itemType === 'powerup') {
+                    ctx.fillStyle = "rgba(250, 204, 21, 0.95)";
+                    ctx.strokeStyle = "#ca8a04";
+                } else if (it.itemType === 'obstacle') {
+                    ctx.fillStyle = "rgba(239, 68, 68, 0.95)";
+                    ctx.strokeStyle = "#991b1b";
+                } else {
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.96)";
+                    ctx.strokeStyle = "#94a3b8";
+                }
+
+                ctx.roundRect(it.x - 10, it.y - 5, it.width, 32, 16);
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = it.itemType === 'obstacle' ? "#ffffff" : "#0f172a";
+                ctx.font = "bold 18px Inter, Noto Sans Thai, sans-serif";
+                ctx.fillText(it.text, it.x, it.y + 1);
+            }
+
+            // Particles
+            for (const p of particles) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Floating Score Texts
+            for (const ft of floatingTexts) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, ft.alpha);
+                ctx.font = "900 17px Inter, Noto Sans Thai, sans-serif";
+                ctx.fillStyle = ft.color;
+                ctx.strokeStyle = "#090d16";
+                ctx.lineWidth = 4;
+                ctx.strokeText(ft.text, ft.x, ft.y);
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+            }
+        }
+
+        function arcadeLoop() {
+            updateArcade();
+            drawArcade();
+            requestAnimationFrame(arcadeLoop);
+        }
+        requestAnimationFrame(arcadeLoop);
+
+        // ----------------------------------------------------
+        // GAME 2: 1669 DISPATCH SPEED QUIZ
+        // ----------------------------------------------------
+        const quizQuestionsPool = [
+            {
+                caller: "สายด่วน: ถนนสุขุมวิท",
+                emoji: "🚗💥🚙",
+                question: "I saw a bad car ________ on the highway! Two cars crashed!",
+                hint: "แปลว่า 'อุบัติเหตุ' บนท้องถนน",
+                answer: "accident",
+                options: ["accident", "flood", "police", "holiday"],
+                explain: "Accident (n.) = อุบัติเหตุ"
+            },
+            {
+                caller: "สายด่วน: หมู่บ้านสุขใจ",
+                emoji: "🏠🔥💨",
+                question: "Help! Smoke is everywhere! The kitchen is on ________!",
+                hint: "แปลว่า 'ไฟไหม้ / เพลิงไหม้'",
+                answer: "fire",
+                options: ["fire", "earthquake", "ambulance", "water"],
+                explain: "Fire (n.) = ไฟไหม้"
+            },
+            {
+                caller: "สายด่วน: อาคารสูงชั้น 12",
+                emoji: "🏢🫨📉",
+                question: "The ground is shaking! Everything is falling! It’s an ________!",
+                hint: "ภัยธรรมชาติที่พื้นดินสั่นสะเทือน (แผ่นดินไหว)",
+                answer: "earthquake",
+                options: ["earthquake", "flood", "firefighter", "accident"],
+                explain: "Earthquake (n.) = แผ่นดินไหว"
+            },
+            {
+                caller: "สายด่วน: ชุมชนริมแม่น้ำ",
+                emoji: "🌧️🌊🏘️",
+                question: "It rained non-stop, and now there is a heavy ________ in our town.",
+                hint: "ฝนตกหนักจนเกิด 'น้ำท่วม'",
+                answer: "flood",
+                options: ["flood", "fire", "police", "rescue"],
+                explain: "Flood (n.) = น้ำท่วม"
+            },
+            {
+                caller: "สายด่วน: สนามโรงเรียน",
+                emoji: "🚑🏥🤕",
+                question: "A boy broke his leg! Please call an ________ to take him to the hospital!",
+                hint: "ยานพาหนะรับ-ส่งผู้บาดเจ็บ (รถพยาบาล)",
+                answer: "ambulance",
+                options: ["ambulance", "police", "earthquake", "accident"],
+                explain: "Ambulance (n.) = รถพยาบาล"
+            },
+            {
+                caller: "สายด่วน: ห้างสรรพสินค้า",
+                emoji: "🚓👮‍♂️🦹",
+                question: "Someone stole my bag! Call the ________ to catch the thief!",
+                hint: "ผู้พิทักษ์สันติราษฎร์ที่คอยจับขโมย (ตำรวจ)",
+                answer: "police",
+                options: ["police", "firefighter", "ambulance", "injured"],
+                explain: "Police (n.) = ตำรวจ"
+            },
+            {
+                caller: "สายด่วน: ตลาดสด",
+                emoji: "🚒👨‍🚒🧯",
+                question: "The brave ________ used water to put out the fire and saved a cat.",
+                hint: "ผู้ที่ทำหน้าที่ดับไฟ (พนักงานดับเพลิง)",
+                answer: "firefighter",
+                options: ["firefighter", "police", "emergency", "doctor"],
+                explain: "Firefighter (n.) = พนักงานดับเพลิง"
+            },
+            {
+                caller: "สายด่วน: ศูนย์ 1669",
+                emoji: "☎️🆘🚨",
+                question: "Please dial 1669 immediately! This is a life-or-death ________!",
+                hint: "สถานการณ์คับขันหรือ 'เหตุฉุกเฉิน'",
+                answer: "emergency",
+                options: ["emergency", "ambulance", "rescue", "normal"],
+                explain: "Emergency (n.) = เหตุฉุกเฉิน"
+            },
+            {
+                caller: "สายด่วน: หน่วยกู้ภัยทางน้ำ",
+                emoji: "🛟🚁🚤",
+                question: "The ________ team came by boat to save people during the flood.",
+                hint: "แปลว่า 'กู้ภัย หรือ ช่วยเหลือ'",
+                answer: "rescue",
+                options: ["rescue", "injured", "accident", "earthquake"],
+                explain: "Rescue (v./n.) = กู้ภัย, ช่วยเหลือ"
+            },
+            {
+                caller: "สายด่วน: แยกไฟแดง",
+                emoji: "🩼🤕🩸",
+                question: "The driver is badly ________. He cannot stand up!",
+                hint: "คำคุณศัพท์แปลว่า 'ได้รับบาดเจ็บ'",
+                answer: "injured",
+                options: ["injured", "rescue", "police", "fire"],
+                explain: "Injured (adj.) = ได้รับบาดเจ็บ"
+            }
+        ];
+
+        let quizList = [];
+        let quizIndex = 0;
+        let quizScore = 0;
+        let quizCorrectCount = 0;
+        let quizStreak = 0;
+        let quizTimeLeft = 15;
+        let quizTimerId = null;
+        let isQuizFrozen = false;
+        let used5050 = false;
+        let usedFreeze = false;
+        let usedHint = false;
+
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function startQuizGame() {
+            quizList = shuffleArray(quizQuestionsPool);
+            quizIndex = 0;
+            quizScore = 0;
+            quizCorrectCount = 0;
+            quizStreak = 0;
+            used5050 = false;
+            usedFreeze = false;
+            usedHint = false;
+
+            ['lifeline5050', 'lifelineFreeze', 'lifelineHint'].forEach(id => {
+                const el = document.getElementById(id);
+                el.disabled = false;
+                el.classList.remove('opacity-40');
+            });
+
+            document.getElementById('quizPlayArea').classList.remove('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            clearInterval(quizTimerId);
+            isQuizFrozen = false;
+            quizTimeLeft = 15;
+
+            const q = quizList[quizIndex];
+            document.getElementById('quizProgressText').textContent = `${quizIndex + 1}/${quizList.length}`;
+            document.getElementById('quizStreakText').textContent = quizStreak;
+            document.getElementById('quizScoreText').textContent = quizScore;
+            document.getElementById('quizCallerTag').textContent = q.caller;
+            document.getElementById('quizEmoji').textContent = q.emoji;
+            document.getElementById('quizQuestionText').textContent = q.question;
+
+            const hintBox = document.getElementById('quizHintBox');
+            hintBox.classList.add('hidden');
+            hintBox.textContent = `💡 ${q.hint}`;
+
+            document.getElementById('quizFeedbackBox').classList.add('hidden');
+
+            const shuffledOptions = shuffleArray(q.options);
+            const grid = document.getElementById('quizOptionsGrid');
+            grid.innerHTML = shuffledOptions.map(opt => {
+                const vInfo = emergencyVocab.find(v => v.word === opt);
+                return `
+                <button onclick="selectQuizOption(this, '${opt}')" data-opt="${opt}" class="quiz-option w-full bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 text-white font-extrabold text-base py-3 px-4 rounded-xl shadow text-left flex items-center justify-between transition">
+                    <span>${vInfo ? vInfo.icon : '🔹'} ${opt}</span>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                </button>`;
+            }).join('');
+
+            updateQuizTimerUI();
+            quizTimerId = setInterval(() => {
+                if (isQuizFrozen) return;
+                quizTimeLeft--;
+                updateQuizTimerUI();
+                if (quizTimeLeft <= 0) {
+                    clearInterval(quizTimerId);
+                    handleQuizTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateQuizTimerUI() {
+            const pct = Math.max(0, (quizTimeLeft / 15) * 100);
+            document.getElementById('quizTimerBar').style.width = `${pct}%`;
+            document.getElementById('quizTimerText').textContent = isQuizFrozen ? `❄️ หยุดเวลา (${quizTimeLeft}s)` : `${quizTimeLeft} วินาที`;
+        }
+
+        function selectQuizOption(btnEl, selected) {
+            clearInterval(quizTimerId);
+            const q = quizList[quizIndex];
+            const isCorrect = selected === q.answer;
+
+            document.querySelectorAll('.quiz-option').forEach(b => {
+                b.disabled = true;
+                if (b.dataset.opt === q.answer) {
+                    b.classList.replace('bg-slate-800', 'bg-emerald-600');
+                    b.classList.replace('border-slate-700', 'border-emerald-400');
+                }
+            });
+
+            const fbBox = document.getElementById('quizFeedbackBox');
+            const fbText = document.getElementById('quizFeedbackText');
+            fbBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                playSfx('bonus');
+                speakWord(q.answer);
+                quizStreak++;
+                quizCorrectCount++;
+                const pts = 20 + quizTimeLeft * 2 + (quizStreak >= 3 ? 15 : 0);
+                quizScore += pts;
+                fbBox.className = 'rounded-2xl p-3 border bg-emerald-950/90 border-emerald-500/50 text-emerald-200 flex flex-col gap-2';
+                fbText.innerHTML = `✅ <strong>ถูกต้อง! (+${pts})</strong> • ${q.explain}`;
+            } else {
+                playSfx('bad');
+                quizStreak = 0;
+                btnEl.classList.replace('bg-slate-800', 'bg-red-600');
+                btnEl.classList.replace('border-slate-700', 'border-red-400');
+                fbBox.className = 'rounded-2xl p-3 border bg-red-950/90 border-red-500/50 text-red-200 flex flex-col gap-2';
+                fbText.innerHTML = `❌ <strong>เฉลยคือ <u>${q.answer}</u></strong> • ${q.explain}`;
+            }
+
+            document.getElementById('quizStreakText').textContent = quizStreak;
+            document.getElementById('quizScoreText').textContent = quizScore;
+        }
+
+        function handleQuizTimeout() {
+            playSfx('bad');
+            quizStreak = 0;
+            const q = quizList[quizIndex];
+            document.querySelectorAll('.quiz-option').forEach(b => {
+                b.disabled = true;
+                if (b.dataset.opt === q.answer) {
+                    b.classList.replace('bg-slate-800', 'bg-emerald-600');
+                }
+            });
+
+            const fbBox = document.getElementById('quizFeedbackBox');
+            const fbText = document.getElementById('quizFeedbackText');
+            fbBox.classList.remove('hidden');
+            fbBox.className = 'rounded-2xl p-3 border bg-amber-950/90 border-amber-500/50 text-amber-200 flex flex-col gap-2';
+            fbText.innerHTML = `⏰ <strong>หมดเวลา!</strong> เฉลยคือ <u>${q.answer}</u> • ${q.explain}`;
+            document.getElementById('quizStreakText').textContent = 0;
+        }
+
+        function nextQuizQuestion() {
+            quizIndex++;
+            if (quizIndex >= quizList.length) {
+                showQuizSummary();
+            } else {
+                loadQuizQuestion();
+            }
+        }
+
+        function showQuizSummary() {
+            document.getElementById('quizPlayArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+            document.getElementById('quizFinalScore').textContent = quizScore;
+            document.getElementById('quizFinalCorrect').textContent = `${quizCorrectCount}/${quizList.length}`;
+
+            let rank = "🥉 เจ้าหน้าที่รับสายฝึกหัด";
+            if (quizCorrectCount >= 9) rank = "🏆 หัวหน้าศูนย์บัญชาการ 1669!";
+            else if (quizCorrectCount >= 7) rank = "🥇 เจ้าหน้าที่กู้ชีพเชี่ยวชาญพิเศษ!";
+            else if (quizCorrectCount >= 5) rank = "🥈 เจ้าหน้าที่ปฏิบัติการฉุกเฉิน";
+
+            document.getElementById('quizRankText').textContent = `ยศของคุณ: ${rank}`;
+        }
+
+        function useLifeline5050() {
+            if (used5050) return;
+            used5050 = true;
+            const btn = document.getElementById('lifeline5050');
+            btn.disabled = true;
+            btn.classList.add('opacity-40');
+
+            const q = quizList[quizIndex];
+            const wrongBtns = Array.from(document.querySelectorAll('.quiz-option')).filter(b => b.dataset.opt !== q.answer);
+            shuffleArray(wrongBtns).slice(0, 2).forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-25', 'line-through');
+            });
+            playSfx('dash');
+        }
+
+        function useLifelineFreeze() {
+            if (usedFreeze) return;
+            usedFreeze = true;
+            isQuizFrozen = true;
+            const btn = document.getElementById('lifelineFreeze');
+            btn.disabled = true;
+            btn.classList.add('opacity-40');
+            updateQuizTimerUI();
+            playSfx('bonus');
+        }
+
+        function useLifelineHint() {
+            if (usedHint) return;
+            usedHint = true;
+            const btn = document.getElementById('lifelineHint');
+            btn.disabled = true;
+            btn.classList.add('opacity-40');
+            document.getElementById('quizHintBox').classList.remove('hidden');
+            playSfx('good');
+        }
+
+        function speakCurrentQuestion() {
+            const q = quizList[quizIndex];
+            if (!q) return;
+            const fullSentence = q.question.replace('________', q.answer);
+            speakWord(fullSentence);
+        }
+    </script>
+</body>
+</html>

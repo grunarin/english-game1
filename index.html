@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Vocabulary - ใบความรู้ภาษาอังกฤษ ม.3</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans Thai -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Thai', 'sans-serif'],
+                    },
+                    colors: {
+                        danger: '#ef4444',
+                        dangerDark: '#dc2626',
+                        warning: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .vocab-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .vocab-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+        .vocab-card.mastered {
+            border-color: #22c55e;
+            background: linear-gradient(to bottom right, #ffffff, #f0fdf4);
+        }
+        .siren-pulse {
+            animation: siren 1.5s infinite alternate;
+        }
+        @keyframes siren {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            100% { box-shadow: 0 0 20px 6px rgba(59, 130, 246, 0.6); }
+        }
+        .meaning-blur {
+            filter: blur(6px);
+            user-select: none;
+            cursor: pointer;
+            transition: filter 0.25s ease;
+        }
+        .meaning-blur.revealed {
+            filter: blur(0);
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .float-anim {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-red-200 selection:text-red-900">
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-truck-medical text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight text-slate-900 block leading-none">Emergency English</span>
+                    <span class="text-xs text-slate-500 font-medium">Unit 1: An Emergency? (ม.3)</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="index.html" class="px-4 py-2 rounded-xl font-bold text-sm sm:text-base bg-red-50 text-red-600 border-2 border-red-200 flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>ใบความรู้</span>
+                </a>
+                <a href="game.html" class="px-4 py-2 rounded-xl font-bold text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white flex items-center gap-2 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-gamepad text-yellow-300"></i>
+                    <span>เข้าสู่หน้าเกม</span>
+                    <span class="hidden sm:inline-block bg-yellow-400 text-slate-900 text-xs px-2 py-0.5 rounded-full font-extrabold animate-pulse">FUN!</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Header Section -->
+    <header class="relative bg-gradient-to-br from-red-700 via-red-600 to-rose-800 text-white py-12 md:py-16 px-4 shadow-xl overflow-hidden">
+        <!-- Decorative Background Icons -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+            <i class="fa-solid fa-fire text-8xl absolute -top-4 left-10"></i>
+            <i class="fa-solid fa-truck-medical text-9xl absolute bottom-0 right-12"></i>
+            <i class="fa-solid fa-phone-volume text-7xl absolute top-12 right-1/4"></i>
+        </div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 bg-white/15 px-4 py-1.5 rounded-full mb-4 backdrop-blur-sm border border-white/20 text-sm font-semibold text-yellow-200">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-300 animate-bounce"></i>
+                <span>Interactive Knowledge Sheet • ใบความรู้แบบโต้ตอบได้</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow">
+                Emergency Vocabulary
+            </h1>
+            <p class="text-lg md:text-2xl text-red-100 font-medium max-w-2xl mx-auto mb-8">
+                เรียนรู้ 10 คำศัพท์ภาษาอังกฤษเกี่ยวกับเหตุฉุกเฉิน พร้อมฟังเสียงอ่าน ตัวอย่างประโยค และสถานการณ์จำลอง
+            </p>
+
+            <!-- Quick Jump / Action Bar -->
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="#vocab-section" class="bg-white text-red-700 hover:bg-red-50 font-bold px-6 py-3 rounded-full shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-volume-high"></i> เรียนคำศัพท์ 10 คำ
+                </a>
+                <a href="#scenario-section" class="bg-red-900/50 hover:bg-red-900/70 text-white border border-red-400/40 font-semibold px-6 py-3 rounded-full transition flex items-center gap-2">
+                    <i class="fa-solid fa-comments"></i> ชวนคิด ชวนคุย
+                </a>
+                <a href="game.html" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-extrabold px-6 py-3 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                    <i class="fa-solid fa-play"></i> ไปเล่นเกมกู้ภัยคำศัพท์!
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-10 space-y-14">
+        
+        <!-- 1. Interactive Hook Section: "What is happening?" -->
+        <section class="bg-white rounded-3xl shadow-md border border-slate-100 p-6 md:p-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-yellow-400 via-red-500 to-indigo-600"></div>
+            
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Warm-Up Activity</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mt-2 mb-2">
+                    "What is happening? Are these normal situations?"
+                </h2>
+                <p class="text-slate-600">
+                    ลองคลิกที่ภาพเหตุการณ์ด้านล่างเพื่อเช็กดูว่า เหตุการณ์ไหนเป็น <span class="text-red-600 font-bold">เหตุฉุกเฉิน (Emergency)</span> หรือ <span class="text-emerald-600 font-bold">เหตุการณ์ปกติ (Normal)</span>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="warmupGrid">
+                <!-- Card 1 -->
+                <button onclick="checkWarmup(this, true, 'ถูกต้อง! รถชนกันเป็นอุบัติเหตุฉุกเฉิน (Car Accident) 🚨')" class="warmup-card group text-left bg-slate-50 hover:bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-red-400 transition-all">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🚗💥🚙</div>
+                    <h3 class="font-bold text-slate-800 text-lg">Cars crashing on the road</h3>
+                    <p class="text-sm text-slate-500 mt-1">คลิกเพื่อตรวจคำตอบ</p>
+                    <div class="warmup-feedback hidden mt-3 text-xs font-bold p-2 rounded-lg"></div>
+                </button>
+
+                <!-- Card 2 -->
+                <button onclick="checkWarmup(this, false, 'ถูกต้อง! การอ่านหนังสือในห้องสมุดเป็นเหตุการณ์ปกติ (Normal Situation) 😊')" class="warmup-card group text-left bg-slate-50 hover:bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 transition-all">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">📚🧑‍🎓✨</div>
+                    <h3 class="font-bold text-slate-800 text-lg">Reading a book in the library</h3>
+                    <p class="text-sm text-slate-500 mt-1">คลิกเพื่อตรวจคำตอบ</p>
+                    <div class="warmup-feedback hidden mt-3 text-xs font-bold p-2 rounded-lg"></div>
+                </button>
+
+                <!-- Card 3 -->
+                <button onclick="checkWarmup(this, true, 'ถูกต้อง! บ้านไฟไหม้เป็นเหตุฉุกเฉินร้ายแรง (Fire Emergency!) 🔥')" class="warmup-card group text-left bg-slate-50 hover:bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-red-400 transition-all">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🏠🔥🚒</div>
+                    <h3 class="font-bold text-slate-800 text-lg">A house is burning with smoke</h3>
+                    <p class="text-sm text-slate-500 mt-1">คลิกเพื่อตรวจคำตอบ</p>
+                    <div class="warmup-feedback hidden mt-3 text-xs font-bold p-2 rounded-lg"></div>
+                </button>
+
+                <!-- Card 4 -->
+                <button onclick="checkWarmup(this, true, 'ถูกต้อง! น้ำท่วมสูงจนเข้าบ้านเป็นเหตุฉุกเฉิน (Flood Emergency!) 🌊')" class="warmup-card group text-left bg-slate-50 hover:bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-red-400 transition-all">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🌧️🌊🏘️</div>
+                    <h3 class="font-bold text-slate-800 text-lg">Heavy water covering the street</h3>
+                    <p class="text-sm text-slate-500 mt-1">คลิกเพื่อตรวจคำตอบ</p>
+                    <div class="warmup-feedback hidden mt-3 text-xs font-bold p-2 rounded-lg"></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- 2. Vocabulary Section (10 Essential Words) -->
+        <section id="vocab-section" class="scroll-mt-20">
+            <!-- Section Header & Interactive Controls -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 mb-8">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-2xl shadow-sm">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">10 Essential Emergency Words</h2>
+                            <p class="text-slate-500 text-sm md:text-base">กดปุ่ม 🔊 เพื่อฟังเสียงอ่านภาษาอังกฤษ และติ๊กถูกเมื่อจำคำศัพท์ได้แล้ว!</p>
+                        </div>
+                    </div>
+
+                    <!-- Study Tools: Flashcard Mode & Progress -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button id="toggleFlashcardBtn" onclick="toggleFlashcardMode()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-2 border border-slate-300">
+                            <i class="fa-solid fa-eye-slash text-indigo-600" id="flashcardIcon"></i>
+                            <span id="flashcardBtnText">โหมดทายความหมาย (ซ่อนคำแปล)</span>
+                        </button>
+                        <button onclick="speakAllWords()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-red-50 hover:bg-red-100 text-red-600 transition flex items-center gap-2 border border-red-200">
+                            <i class="fa-solid fa-volume-high"></i>
+                            <span>ฟังครบทั้ง 10 คำ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs & Mastery Progress Bar -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                    <!-- Category Tabs -->
+                    <div class="flex flex-wrap gap-2" id="categoryTabs">
+                        <button onclick="filterCategory('all')" data-cat="all" class="cat-tab active px-4 py-1.5 rounded-full text-sm font-bold bg-slate-900 text-white transition">
+                            ทั้งหมด (10)
+                        </button>
+                        <button onclick="filterCategory('disaster')" data-cat="disaster" class="cat-tab px-4 py-1.5 rounded-full text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                            🔥 ภัยพิบัติ/เหตุการณ์ (4)
+                        </button>
+                        <button onclick="filterCategory('responder')" data-cat="responder" class="cat-tab px-4 py-1.5 rounded-full text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                            🚑 ผู้ช่วยเหลือ/ยานพาหนะ (3)
+                        </button>
+                        <button onclick="filterCategory('status')" data-cat="status" class="cat-tab px-4 py-1.5 rounded-full text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                            🆘 สถานการณ์/การช่วยเหลือ (3)
+                        </button>
+                    </div>
+
+                    <!-- Progress Counter -->
+                    <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">ความแม่นยำคำศัพท์:</span>
+                        <div class="w-32 h-3 bg-slate-200 rounded-full overflow-hidden">
+                            <div id="masteryBar" class="h-full bg-gradient-to-r from-emerald-500 to-green-400 transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span id="masteryCount" class="text-sm font-extrabold text-emerald-600">0/10</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dynamic Vocabulary Grid -->
+            <div id="vocabGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Cards rendered by JS for rich interactivity -->
+            </div>
+        </section>
+
+        <!-- 3. Emergency Hotlines & Key Phrases Banner (ความรู้เสริมที่ใช้ได้จริง) -->
+        <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white rounded-3xl shadow-xl p-6 md:p-10 relative overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="bg-red-500/20 text-red-300 border border-red-400/30 text-xs font-extrabold px-3 py-1 rounded-full uppercase">
+                        Real-Life Survival Tip
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold leading-tight">
+                        เบอร์โทรฉุกเฉิน & ประโยคขอความช่วยเหลือ ☎️
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base">
+                        เมื่อเกิดเหตุฉุกเฉิน นอกจากรู้คำศัพท์แล้ว เราควรจำหมายเลขฉุกเฉินและรูปประโยคสั้นๆ เพื่อแจ้งเหตุได้อย่างรวดเร็ว
+                    </p>
+                    <div class="grid grid-cols-3 gap-3 pt-2">
+                        <div class="bg-white/10 backdrop-blur p-3 rounded-2xl text-center border border-white/10">
+                            <div class="text-2xl font-black text-blue-400">191</div>
+                            <div class="text-xs text-slate-300 font-semibold mt-0.5">Police (ตำรวจ)</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur p-3 rounded-2xl text-center border border-white/10">
+                            <div class="text-2xl font-black text-orange-400">199</div>
+                            <div class="text-xs text-slate-300 font-semibold mt-0.5">Fire (ดับเพลิง)</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur p-3 rounded-2xl text-center border border-white/10">
+                            <div class="text-2xl font-black text-red-400">1669</div>
+                            <div class="text-xs text-slate-300 font-semibold mt-0.5">Ambulance (กู้ชีพ)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Useful Expressions -->
+                <div class="lg:col-span-7 bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
+                    <h3 class="font-bold text-yellow-300 flex items-center gap-2 text-lg">
+                        <i class="fa-solid fa-bullhorn"></i> ประโยคแจ้งเหตุฉุกเฉินที่ควรจำ (กดเพื่อฟังเสียง):
+                    </h3>
+                    
+                    <div onclick="speakText('Help! There is an emergency!')" class="cursor-pointer group bg-slate-800/90 hover:bg-slate-700 p-3.5 rounded-xl flex items-center justify-between transition border border-slate-700">
+                        <div>
+                            <p class="font-bold text-white group-hover:text-yellow-300 transition">"Help! There is an <span class="underline decoration-red-400">emergency</span>!"</p>
+                            <p class="text-xs text-slate-400">ช่วยด้วย! มีเหตุฉุกเฉินเกิดขึ้น!</p>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-white/10 group-hover:bg-red-500 flex items-center justify-center transition">
+                            <i class="fa-solid fa-volume-high text-sm"></i>
+                        </span>
+                    </div>
+
+                    <div onclick="speakText('Please call an ambulance! Someone is injured.')" class="cursor-pointer group bg-slate-800/90 hover:bg-slate-700 p-3.5 rounded-xl flex items-center justify-between transition border border-slate-700">
+                        <div>
+                            <p class="font-bold text-white group-hover:text-yellow-300 transition">"Please call an <span class="underline decoration-rose-400">ambulance</span>! Someone is <span class="underline decoration-purple-400">injured</span>."</p>
+                            <p class="text-xs text-slate-400">ช่วยเรียกรถพยาบาลที! มีคนได้รับบาดเจ็บ</p>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-white/10 group-hover:bg-red-500 flex items-center justify-center transition">
+                            <i class="fa-solid fa-volume-high text-sm"></i>
+                        </span>
+                    </div>
+
+                    <div onclick="speakText('Call the firefighter! There is a fire in the building!')" class="cursor-pointer group bg-slate-800/90 hover:bg-slate-700 p-3.5 rounded-xl flex items-center justify-between transition border border-slate-700">
+                        <div>
+                            <p class="font-bold text-white group-hover:text-yellow-300 transition">"Call the <span class="underline decoration-orange-400">firefighter</span>! There is a <span class="underline decoration-orange-400">fire</span> in the building!"</p>
+                            <p class="text-xs text-slate-400">เรียกนักดับเพลิงเร็ว! มีไฟไหม้ในตึก!</p>
+                        </div>
+                        <span class="w-9 h-9 rounded-full bg-white/10 group-hover:bg-red-500 flex items-center justify-center transition">
+                            <i class="fa-solid fa-volume-high text-sm"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Interactive Q&A / Scenario Section (Think & Discuss) -->
+        <section id="scenario-section" class="bg-white rounded-3xl shadow-md border border-slate-200 p-6 md:p-10 scroll-mt-20">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-slate-100 pb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-900">Think & Discuss (ชวนคิด ชวนคุย)</h2>
+                        <p class="text-sm text-slate-500">ลองคิดคำตอบในใจ หรือคลิกที่ตัวเลือกเพื่อดูเฉลยและเหตุผล</p>
+                    </div>
+                </div>
+                <button onclick="revealAllDiscuss()" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-4 py-2 rounded-xl self-start sm:self-auto">
+                    <i class="fa-solid fa-eye mr-1"></i> เปิดเฉลยทั้งหมด
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Interactive Question 1 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                    <div class="flex gap-4 items-start">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 font-extrabold shadow">Q1</div>
+                        <div class="w-full">
+                            <p class="text-lg font-bold text-slate-800 mb-1">
+                                "If someone is badly hurt in a car crash, which vehicle do we need to call?"
+                            </p>
+                            <p class="text-sm text-slate-500 mb-4">(ถ้ามีคนบาดเจ็บหนักจากอุบัติเหตุรถชน เราต้องเรียกยานพาหนะใด?)</p>
+                            
+                            <div class="flex flex-wrap gap-3 mb-3">
+                                <button onclick="answerDiscuss(1, true, 'ถูกต้อง! 🚑 An ambulance! เพราะมีผู้บาดเจ็บ (injured) ต้องรีบนำส่งโรงพยาบาล')" class="px-4 py-2 bg-white hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-400 rounded-xl font-bold text-slate-700 transition">
+                                    🚑 An ambulance
+                                </button>
+                                <button onclick="answerDiscuss(1, false, 'ยังไม่ใช่! รถดับเพลิงใช้สำหรับเหตุไฟไหม้ (Fire) สำหรับคนเจ็บต้องเรียก 🚑 An ambulance!')" class="px-4 py-2 bg-white hover:bg-red-50 border-2 border-slate-200 hover:border-red-300 rounded-xl font-bold text-slate-700 transition">
+                                    🚒 A fire truck
+                                </button>
+                                <button onclick="answerDiscuss(1, false, 'ยังไม่ใช่! รถแท็กซี่ไม่มีอุปกรณ์กู้ชีพฉุกเฉิน ต้องเรียก 🚑 An ambulance!')" class="px-4 py-2 bg-white hover:bg-red-50 border-2 border-slate-200 hover:border-red-300 rounded-xl font-bold text-slate-700 transition">
+                                    🚕 A taxi
+                                </button>
+                            </div>
+                            <div id="discuss-ans-1" class="hidden mt-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-semibold">
+                                <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Answer: <span class="font-extrabold">An ambulance!</span> (เพราะต้องช่วยผู้บาดเจ็บส่งโรงพยาบาล)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Question 2 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                    <div class="flex gap-4 items-start">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 font-extrabold shadow">Q2</div>
+                        <div class="w-full">
+                            <p class="text-lg font-bold text-slate-800 mb-1">
+                                "In your situation, who should you call first, the police or the firefighter?"
+                            </p>
+                            <p class="text-sm text-slate-500 mb-4">(ในสถานการณ์ต่างๆ เราควรเรียกใครก่อน ระหว่าง ตำรวจ หรือ นักดับเพลิง? — คลิกการ์ดเพื่อเปิดคำตอบ)</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div onclick="this.querySelector('.ans-reveal').classList.remove('hidden')" class="cursor-pointer bg-white p-4 rounded-xl border-2 border-orange-200 hover:border-orange-400 transition shadow-sm">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-orange-600"><i class="fa-solid fa-fire mr-1"></i> Situation A: A kitchen is on fire!</span>
+                                        <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded font-bold">คลิกดูคำตอบ</span>
+                                    </div>
+                                    <div class="ans-reveal hidden mt-2 pt-2 border-t border-slate-100 text-slate-700 font-medium">
+                                        👉 Call <span class="text-orange-600 font-extrabold">the firefighter</span>, because there is a fire!
+                                    </div>
+                                </div>
+
+                                <div onclick="this.querySelector('.ans-reveal').classList.remove('hidden')" class="cursor-pointer bg-white p-4 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition shadow-sm">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-blue-600"><i class="fa-solid fa-car-burst mr-1"></i> Situation B: A car accident / thief!</span>
+                                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold">คลิกดูคำตอบ</span>
+                                    </div>
+                                    <div class="ans-reveal hidden mt-2 pt-2 border-t border-slate-100 text-slate-700 font-medium">
+                                        👉 Call <span class="text-blue-600 font-extrabold">the police</span>, because it's a car accident or crime.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Question 3 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                    <div class="flex gap-4 items-start">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 font-extrabold shadow">Q3</div>
+                        <div class="w-full">
+                            <p class="text-lg font-bold text-slate-800 mb-1">
+                                "Why is it important to know these emergency words in English?"
+                            </p>
+                            <p class="text-sm text-slate-500 mb-4">(ทำไมการรู้คำศัพท์ฉุกเฉินภาษาอังกฤษจึงสำคัญมาก?)</p>
+                            
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="speakText('To ask for help when travelling abroad.')" class="bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 px-4 py-2.5 rounded-full text-slate-700 font-semibold shadow-sm transition flex items-center gap-2">
+                                    <i class="fa-solid fa-comment-dots text-blue-500"></i>
+                                    <span>1. To ask for help (เพื่อขอความช่วยเหลือ)</span>
+                                    <i class="fa-solid fa-volume-low text-slate-400 text-xs"></i>
+                                </button>
+                                <button onclick="speakText('To survive in dangerous situations.')" class="bg-white hover:bg-red-50 border border-slate-200 hover:border-red-300 px-4 py-2.5 rounded-full text-slate-700 font-semibold shadow-sm transition flex items-center gap-2">
+                                    <i class="fa-solid fa-heart-pulse text-red-500"></i>
+                                    <span>2. To survive (เพื่อเอาชีวิตรอดและอ่านป้ายเตือนภัย)</span>
+                                    <i class="fa-solid fa-volume-low text-slate-400 text-xs"></i>
+                                </button>
+                                <button onclick="speakText('To help foreigners in Thailand.')" class="bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 px-4 py-2.5 rounded-full text-slate-700 font-semibold shadow-sm transition flex items-center gap-2">
+                                    <i class="fa-solid fa-earth-asia text-emerald-500"></i>
+                                    <span>3. To help foreigners (เพื่อช่วยเหลือชาวต่างชาติ)</span>
+                                    <i class="fa-solid fa-volume-low text-slate-400 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Call to Action Banner to Game Page -->
+        <section class="bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-700 rounded-3xl shadow-2xl p-8 md:p-12 text-white text-center relative overflow-hidden">
+            <div class="max-w-3xl mx-auto relative z-10">
+                <div class="inline-block bg-white/20 p-4 rounded-2xl mb-4 backdrop-blur-sm float-anim">
+                    <i class="fa-solid fa-gamepad text-5xl text-yellow-300"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-3">พร้อมทดสอบความไวและคำศัพท์หรือยัง?</h2>
+                <p class="text-indigo-100 text-lg mb-8">
+                    ไปสนุกกับ <strong>หน้าเกม (Game Center)</strong> ที่มีทั้งโหมดขับรถพยาบาลกู้ภัยคำศัพท์ (Ambulance Arcade) พร้อมไอเทมพิเศษ คอมโบ และโหมดศูนย์รับแจ้งเหตุด่วน (Speed Dispatch Quiz)!
+                </p>
+                <a href="game.html" class="inline-flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black text-xl px-10 py-4 rounded-full shadow-xl transition transform hover:scale-105">
+                    <i class="fa-solid fa-rocket"></i>
+                    <span>ไปที่หน้าเกมเลย! (Play Game)</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-8 text-center text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-left">
+                <p class="font-bold text-slate-700">Unit 1: An Emergency? | English for M.3</p>
+                <p class="text-xs text-slate-400">Active Learning Design - STAGE Model</p>
+            </div>
+            <div class="flex gap-4 text-sm font-semibold">
+                <a href="index.html" class="text-red-600 hover:underline"><i class="fa-solid fa-book-open mr-1"></i> หน้าใบความรู้</a>
+                <span class="text-slate-300">|</span>
+                <a href="game.html" class="text-indigo-600 hover:underline"><i class="fa-solid fa-gamepad mr-1"></i> หน้าเกมฝึกคำศัพท์</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Knowledge Script -->
+    <script>
+        const vocabList = [
+            {
+                id: 1,
+                word: "Accident",
+                pos: "n.",
+                ipa: "/ˈæk.sɪ.dənt/",
+                pronunThai: "แอ๊ค-ซิ-เดินท์",
+                meaning: "อุบัติเหตุ",
+                category: "disaster",
+                catLabel: "เหตุการณ์",
+                icon: "fa-car-burst",
+                colorBg: "bg-red-100",
+                colorText: "text-red-600",
+                borderAccent: "border-red-400",
+                example: "I saw a car accident on the road.",
+                exampleThai: "ฉันเห็นอุบัติเหตุรถชนบนถนน",
+                phrase: "by accident (โดยบังเอิญ) / car accident (อุบัติเหตุทางรถยนต์)"
+            },
+            {
+                id: 2,
+                word: "Fire",
+                pos: "n.",
+                ipa: "/faɪər/",
+                pronunThai: "ไฟ-เออะ",
+                meaning: "ไฟไหม้, เพลิงไหม้",
+                category: "disaster",
+                catLabel: "ภัยพิบัติ/เหตุการณ์",
+                icon: "fa-fire",
+                colorBg: "bg-orange-100",
+                colorText: "text-orange-600",
+                borderAccent: "border-orange-400",
+                example: "Call the firefighter! There is a fire!",
+                exampleThai: "เรียกนักดับเพลิงเร็ว! มีไฟไหม้!",
+                phrase: "on fire (กำลังลุกไหม้) / put out a fire (ดับไฟ)"
+            },
+            {
+                id: 3,
+                word: "Earthquake",
+                pos: "n.",
+                ipa: "/ˈɜːθ.kweɪk/",
+                pronunThai: "เอิร์ธ-เควก",
+                meaning: "แผ่นดินไหว",
+                category: "disaster",
+                catLabel: "ภัยธรรมชาติ",
+                icon: "fa-house-crack",
+                colorBg: "bg-amber-100",
+                colorText: "text-amber-700",
+                borderAccent: "border-amber-500",
+                example: "The ground is shaking. It’s an earthquake!",
+                exampleThai: "พื้นดินกำลังสั่นสะเทือน มันคือแผ่นดินไหว!",
+                phrase: "strong earthquake (แผ่นดินไหวรุนแรง)"
+            },
+            {
+                id: 4,
+                word: "Flood",
+                pos: "n.",
+                ipa: "/flʌd/",
+                pronunThai: "ฟลัด",
+                meaning: "น้ำท่วม",
+                category: "disaster",
+                catLabel: "ภัยธรรมชาติ",
+                icon: "fa-house-flood-water",
+                colorBg: "bg-cyan-100",
+                colorText: "text-cyan-600",
+                borderAccent: "border-cyan-400",
+                example: "The rain didn't stop, and now there is a flood.",
+                exampleThai: "ฝนตกไม่หยุด และตอนนี้เกิดน้ำท่วมแล้ว",
+                phrase: "flash flood (น้ำท่วมฉับพลัน)"
+            },
+            {
+                id: 5,
+                word: "Ambulance",
+                pos: "n.",
+                ipa: "/ˈæm.bjə.ləns/",
+                pronunThai: "แอม-บิว-เลินซ์",
+                meaning: "รถพยาบาล",
+                category: "responder",
+                catLabel: "ยานพาหนะฉุกเฉิน",
+                icon: "fa-truck-medical",
+                colorBg: "bg-rose-100",
+                colorText: "text-rose-600",
+                borderAccent: "border-rose-400",
+                example: "We need an ambulance for the injured man.",
+                exampleThai: "เราต้องการรถพยาบาลสำหรับชายที่ได้รับบาดเจ็บ",
+                phrase: "call an ambulance (เรียกรถพยาบาล)"
+            },
+            {
+                id: 6,
+                word: "Police",
+                pos: "n.",
+                ipa: "/pəˈliːs/",
+                pronunThai: "พะ-ลีซ",
+                meaning: "ตำรวจ",
+                category: "responder",
+                catLabel: "ผู้ช่วยเหลือ",
+                icon: "fa-building-shield",
+                colorBg: "bg-blue-100",
+                colorText: "text-blue-700",
+                borderAccent: "border-blue-500",
+                example: "The police are coming to catch the thief.",
+                exampleThai: "ตำรวจกำลังมาเพื่อจับขโมย",
+                phrase: "police officer (เจ้าหน้าที่ตำรวจ) / call the police"
+            },
+            {
+                id: 7,
+                word: "Firefighter",
+                pos: "n.",
+                ipa: "/ˈfaɪəˌfaɪ.tər/",
+                pronunThai: "ไฟ-เออะ-ไฟ-เทอะ",
+                meaning: "พนักงานดับเพลิง",
+                category: "responder",
+                catLabel: "ผู้ช่วยเหลือ",
+                icon: "fa-fire-extinguisher",
+                colorBg: "bg-orange-100",
+                colorText: "text-orange-600",
+                borderAccent: "border-orange-500",
+                example: "The firefighter saved a cat from the tree.",
+                exampleThai: "นักดับเพลิงช่วยชีวิตแมวลงมาจากต้นไม้",
+                phrase: "brave firefighter (นักดับเพลิงผู้กล้าหาญ)"
+            },
+            {
+                id: 8,
+                word: "Emergency",
+                pos: "n.",
+                ipa: "/ɪˈmɜː.dʒən.si/",
+                pronunThai: "อิ-เมอร์-เจิน-ซี",
+                meaning: "เหตุฉุกเฉิน",
+                category: "status",
+                catLabel: "สถานการณ์",
+                icon: "fa-phone-volume",
+                colorBg: "bg-red-100",
+                colorText: "text-red-600",
+                borderAccent: "border-red-500",
+                example: "Please dial 1669, this is an emergency!",
+                exampleThai: "กรุณากดเบอร์ 1669 นี่คือเหตุฉุกเฉิน!",
+                phrase: "emergency exit (ทางออกฉุกเฉิน) / emergency room (ห้องฉุกเฉิน)"
+            },
+            {
+                id: 9,
+                word: "Rescue",
+                pos: "v. / n.",
+                ipa: "/ˈres.kjuː/",
+                pronunThai: "เรส-คิว",
+                meaning: "กู้ภัย, ช่วยเหลือ",
+                category: "status",
+                catLabel: "การช่วยเหลือ",
+                icon: "fa-life-ring",
+                colorBg: "bg-teal-100",
+                colorText: "text-teal-600",
+                borderAccent: "border-teal-400",
+                example: "The rescue team is helping people.",
+                exampleThai: "ทีมกู้ภัยกำลังช่วยเหลือผู้คน",
+                phrase: "rescue team (ทีมกู้ภัย) / rescue boat (เรือกู้ภัย)"
+            },
+            {
+                id: 10,
+                word: "Injured",
+                pos: "adj.",
+                ipa: "/ˈɪn.dʒəd/",
+                pronunThai: "อิน-เจิร์ด",
+                meaning: "ได้รับบาดเจ็บ",
+                category: "status",
+                catLabel: "อาการ/สถานะ",
+                icon: "fa-crutch",
+                colorBg: "bg-purple-100",
+                colorText: "text-purple-600",
+                borderAccent: "border-purple-400",
+                example: "The driver is badly injured.",
+                exampleThai: "คนขับรถได้รับบาดเจ็บสาหัส",
+                phrase: "badly injured (บาดเจ็บสาหัส) / the injured (ผู้บาดเจ็บ)"
+            }
+        ];
+
+        let isFlashcardMode = false;
+        let currentCategory = 'all';
+        let masteredIds = JSON.parse(localStorage.getItem('emerg_mastered_v1') || '[]');
+
+        // Text-to-Speech Function
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert('เบราว์เซอร์ของคุณไม่รองรับระบบอ่านออกเสียง');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = 0.9;
+            window.speechSynthesis.speak(utter);
+        }
+
+        function speakAllWords() {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            vocabList.forEach((item) => {
+                const utter = new SpeechSynthesisUtterance(item.word);
+                utter.lang = 'en-US';
+                utter.rate = 0.85;
+                window.speechSynthesis.speak(utter);
+            });
+        }
+
+        function renderVocabCards() {
+            const grid = document.getElementById('vocabGrid');
+            const filtered = currentCategory === 'all'
+                ? vocabList
+                : vocabList.filter(item => item.category === currentCategory);
+
+            grid.innerHTML = filtered.map(item => {
+                const isMastered = masteredIds.includes(item.id);
+                const blurClass = isFlashcardMode ? 'meaning-blur' : '';
+
+                return `
+                <div class="vocab-card bg-white rounded-2xl p-6 shadow-sm border-2 ${isMastered ? 'mastered border-emerald-400' : 'border-slate-100'} flex flex-col justify-between gap-4 relative">
+                    <div class="flex items-start gap-4">
+                        <!-- Icon -->
+                        <div class="flex-shrink-0 w-14 h-14 rounded-2xl ${item.colorBg} flex items-center justify-center ${item.colorText} text-2xl shadow-sm">
+                            <i class="fa-solid ${item.icon}"></i>
+                        </div>
+
+                        <!-- Main Word Info -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">#${item.id} • ${item.catLabel}</span>
+                                <button onclick="toggleMastery(${item.id})" class="text-xs font-bold px-3 py-1 rounded-full border transition flex items-center gap-1 ${isMastered ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-slate-500 border-slate-200 hover:border-emerald-400'}">
+                                    <i class="fa-solid fa-check"></i>
+                                    <span>${isMastered ? 'จำได้แล้ว' : 'ติ๊กเมื่อจำได้'}</span>
+                                </button>
+                            </div>
+
+                            <div class="flex items-baseline gap-2 mt-2 flex-wrap">
+                                <h3 class="text-2xl font-extrabold text-slate-900">${item.word}</h3>
+                                <span class="text-sm font-semibold text-slate-400">(${item.pos})</span>
+                                <button onclick="speakText('${item.word}')" title="ฟังเสียงคำศัพท์" class="ml-1 w-8 h-8 rounded-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white transition inline-flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-volume-high text-sm"></i>
+                                </button>
+                            </div>
+
+                            <p class="text-xs text-slate-500 font-medium mt-0.5">
+                                ${item.ipa} • <span class="text-slate-600">อ่านว่า: ${item.pronunThai}</span>
+                            </p>
+
+                            <!-- Meaning (Flippable in Flashcard Mode) -->
+                            <div onclick="this.classList.toggle('revealed')" title="คลิกเพื่อดูคำแปล" class="${blurClass} mt-2 inline-block">
+                                <p class="text-xl font-extrabold text-blue-600">${item.meaning}</p>
+                            </div>
+                            ${isFlashcardMode ? '<span class="text-xs text-indigo-500 ml-2 font-semibold">(คลิกที่แถบเบลอเพื่อดูเฉลย)</span>' : ''}
+                        </div>
+                    </div>
+
+                    <!-- Example Sentence & Phrase -->
+                    <div class="space-y-2 pt-2 border-t border-slate-100">
+                        <div class="bg-slate-50 rounded-xl p-3.5 text-sm border-l-4 ${item.borderAccent} flex items-start justify-between gap-2">
+                            <div>
+                                <p class="font-semibold text-slate-800">
+                                    <span class="text-red-600 font-bold">Ex:</span> ${item.example}
+                                </p>
+                                <p class="text-xs text-slate-500 mt-1 ${blurClass}" onclick="this.classList.toggle('revealed')">${item.exampleThai}</p>
+                            </div>
+                            <button onclick="speakText('${item.example.replace(/'/g, "\\'")}')" title="ฟังเสียงประโยคตัวอย่าง" class="flex-shrink-0 w-8 h-8 rounded-lg bg-white hover:bg-slate-200 text-slate-600 border border-slate-200 flex items-center justify-center transition">
+                                <i class="fa-solid fa-play text-xs"></i>
+                            </button>
+                        </div>
+
+                        <div class="text-xs text-slate-600 bg-amber-50/70 px-3 py-1.5 rounded-lg border border-amber-100">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>
+                            <span class="font-bold">คำที่ใช้คู่กันบ่อย:</span> ${item.phrase}
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            updateMasteryUI();
+        }
+
+        function toggleMastery(id) {
+            if (masteredIds.includes(id)) {
+                masteredIds = masteredIds.filter(item => item !== id);
+            } else {
+                masteredIds.push(id);
+            }
+            localStorage.setItem('emerg_mastered_v1', JSON.stringify(masteredIds));
+            renderVocabCards();
+        }
+
+        function updateMasteryUI() {
+            const count = masteredIds.length;
+            const pct = Math.round((count / vocabList.length) * 100);
+            document.getElementById('masteryBar').style.width = `${pct}%`;
+            document.getElementById('masteryCount').textContent = `${count}/${vocabList.length}`;
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-tab').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = 'cat-tab active px-4 py-1.5 rounded-full text-sm font-bold bg-slate-900 text-white transition';
+                } else {
+                    btn.className = 'cat-tab px-4 py-1.5 rounded-full text-sm font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+                }
+            });
+            renderVocabCards();
+        }
+
+        function toggleFlashcardMode() {
+            isFlashcardMode = !isFlashcardMode;
+            const btnText = document.getElementById('flashcardBtnText');
+            const btn = document.getElementById('toggleFlashcardBtn');
+            const icon = document.getElementById('flashcardIcon');
+
+            if (isFlashcardMode) {
+                btnText.textContent = 'แสดงคำแปลทั้งหมด';
+                btn.className = 'px-4 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white transition flex items-center gap-2 border border-indigo-600 shadow-sm';
+                icon.className = 'fa-solid fa-eye text-yellow-300';
+            } else {
+                btnText.textContent = 'โหมดทายความหมาย (ซ่อนคำแปล)';
+                btn.className = 'px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-2 border border-slate-300';
+                icon.className = 'fa-solid fa-eye-slash text-indigo-600';
+            }
+            renderVocabCards();
+        }
+
+        // Warm-up check
+        function checkWarmup(btn, isEmergency, msg) {
+            const fb = btn.querySelector('.warmup-feedback');
+            fb.classList.remove('hidden');
+            if (isEmergency) {
+                btn.classList.add('border-red-500', 'bg-red-50/40');
+                fb.className = 'warmup-feedback mt-3 text-xs font-bold p-2.5 rounded-lg bg-red-100 text-red-800';
+            } else {
+                btn.classList.add('border-emerald-500', 'bg-emerald-50/40');
+                fb.className = 'warmup-feedback mt-3 text-xs font-bold p-2.5 rounded-lg bg-emerald-100 text-emerald-800';
+            }
+            fb.textContent = msg;
+        }
+
+        // Discuss Q&A
+        function answerDiscuss(qNum, isCorrect, text) {
+            const box = document.getElementById(`discuss-ans-${qNum}`);
+            box.classList.remove('hidden');
+            if (isCorrect) {
+                box.className = 'mt-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-semibold';
+                box.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> ${text}`;
+                speakText('An ambulance!');
+            } else {
+                box.className = 'mt-3 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 font-semibold';
+                box.innerHTML = `<i class="fa-solid fa-circle-exclamation text-amber-600 mr-1"></i> ${text}`;
+            }
+        }
+
+        function revealAllDiscuss() {
+            document.getElementById('discuss-ans-1').classList.remove('hidden');
+            document.querySelectorAll('.ans-reveal').forEach(el => el.classList.remove('hidden'));
+        }
+
+        // Initialize on load
+        renderVocabCards();
+    </script>
+</body>
+</html>
