@@ -98,14 +98,17 @@
             </a>
 
             <div class="flex items-center gap-2 sm:gap-3">
-                <a href="index.html" class="px-4 py-2 rounded-xl font-bold text-sm sm:text-base bg-red-50 text-red-600 border-2 border-red-200 flex items-center gap-2 shadow-sm">
+                <a href="index.html" class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm bg-red-50 text-red-600 border-2 border-red-200 flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-book-open"></i>
                     <span>ใบความรู้</span>
                 </a>
-                <a href="game.html" class="px-4 py-2 rounded-xl font-bold text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white flex items-center gap-2 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                <a href="game.html" class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                     <i class="fa-solid fa-gamepad text-yellow-300"></i>
-                    <span>เข้าสู่หน้าเกม</span>
-                    <span class="hidden sm:inline-block bg-yellow-400 text-slate-900 text-xs px-2 py-0.5 rounded-full font-extrabold animate-pulse">FUN!</span>
+                    <span>เกมกู้ภัย</span>
+                </a>
+                <a href="game2.html" class="px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-clone"></i>
+                    <span>สุ่มป้ายคำศัพท์</span>
                 </a>
             </div>
         </div>
@@ -137,11 +140,11 @@
                 <a href="#vocab-section" class="bg-white text-red-700 hover:bg-red-50 font-bold px-6 py-3 rounded-full shadow-lg transition flex items-center gap-2">
                     <i class="fa-solid fa-volume-high"></i> เรียนคำศัพท์ 10 คำ
                 </a>
-                <a href="#scenario-section" class="bg-red-900/50 hover:bg-red-900/70 text-white border border-red-400/40 font-semibold px-6 py-3 rounded-full transition flex items-center gap-2">
-                    <i class="fa-solid fa-comments"></i> ชวนคิด ชวนคุย
-                </a>
                 <a href="game.html" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-extrabold px-6 py-3 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2">
-                    <i class="fa-solid fa-play"></i> ไปเล่นเกมกู้ภัยคำศัพท์!
+                    <i class="fa-solid fa-truck-medical"></i> เกมที่ 1: ขับรถพยาบาลกู้ภัย
+                </a>
+                <a href="game2.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold px-6 py-3 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                    <i class="fa-solid fa-clone"></i> เกมที่ 2: สุ่มป้ายคำศัพท์ (45 วิ)
                 </a>
             </div>
         </div>
@@ -444,7 +447,7 @@
             </div>
         </section>
 
-        <!-- 5. Call to Action Banner to Game Page -->
+        <!-- 5. Call to Action Banner to Game Pages -->
         <section class="bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-700 rounded-3xl shadow-2xl p-8 md:p-12 text-white text-center relative overflow-hidden">
             <div class="max-w-3xl mx-auto relative z-10">
                 <div class="inline-block bg-white/20 p-4 rounded-2xl mb-4 backdrop-blur-sm float-anim">
@@ -452,13 +455,18 @@
                 </div>
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-3">พร้อมทดสอบความไวและคำศัพท์หรือยัง?</h2>
                 <p class="text-indigo-100 text-lg mb-8">
-                    ไปสนุกกับ <strong>หน้าเกม (Game Center)</strong> ที่มีทั้งโหมดขับรถพยาบาลกู้ภัยคำศัพท์ (Ambulance Arcade) พร้อมไอเทมพิเศษ คอมโบ และโหมดศูนย์รับแจ้งเหตุด่วน (Speed Dispatch Quiz)!
+                    เลือกสนุกกับเกมฝึกคำศัพท์ทั้ง 2 รูปแบบ ทั้งโหมด <strong>ขับรถพยาบาลกู้ภัย (game.html)</strong> และโหมด <strong>สุ่มป้ายคำศัพท์ 45 วินาที (game2.html)</strong>!
                 </p>
-                <a href="game.html" class="inline-flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black text-xl px-10 py-4 rounded-full shadow-xl transition transform hover:scale-105">
-                    <i class="fa-solid fa-rocket"></i>
-                    <span>ไปที่หน้าเกมเลย! (Play Game)</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="game.html" class="inline-flex items-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black text-lg md:text-xl px-8 py-4 rounded-full shadow-xl transition transform hover:scale-105">
+                        <i class="fa-solid fa-truck-medical"></i>
+                        <span>เกม 1: รถพยาบาลกู้ภัย</span>
+                    </a>
+                    <a href="game2.html" class="inline-flex items-center gap-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-lg md:text-xl px-8 py-4 rounded-full shadow-xl transition transform hover:scale-105">
+                        <i class="fa-solid fa-clone"></i>
+                        <span>เกม 2: สุ่มป้ายคำศัพท์ (45 วิ)</span>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -471,10 +479,10 @@
                 <p class="font-bold text-slate-700">Unit 1: An Emergency? | English for M.3</p>
                 <p class="text-xs text-slate-400">Active Learning Design - STAGE Model</p>
             </div>
-            <div class="flex gap-4 text-sm font-semibold">
-                <a href="index.html" class="text-red-600 hover:underline"><i class="fa-solid fa-book-open mr-1"></i> หน้าใบความรู้</a>
-                <span class="text-slate-300">|</span>
-                <a href="game.html" class="text-indigo-600 hover:underline"><i class="fa-solid fa-gamepad mr-1"></i> หน้าเกมฝึกคำศัพท์</a>
+            <div class="flex flex-wrap justify-center gap-3 text-sm font-bold">
+                <a href="index.html" class="px-3.5 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200"><i class="fa-solid fa-book-open mr-1"></i> 1. ใบความรู้</a>
+                <a href="game.html" class="px-3.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200 transition"><i class="fa-solid fa-truck-medical mr-1"></i> 2. เกมรถพยาบาล</a>
+                <a href="game2.html" class="px-3.5 py-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition"><i class="fa-solid fa-clone mr-1"></i> 3. เกมสุ่มป้ายคำศัพท์</a>
             </div>
         </div>
     </footer>

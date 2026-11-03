@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมสุ่มป้ายคำศัพท์ (Word Card Randomizer) - Emergency Vocabulary</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans Thai -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Thai', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(239, 68, 68, 0.16) 0px, transparent 50%),
+                radial-gradient(at 85% 85%, rgba(99, 102, 241, 0.18) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+        @keyframes cardPop {
+            0% { transform: scale(0.88) rotate(-2deg); opacity: 0.4; }
+            60% { transform: scale(1.03) rotate(0.5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .card-pop-anim {
+            animation: cardPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes pulseUrgent {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .urgent-timer {
+            animation: pulseUrgent 0.5s infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 antialiased selection:bg-red-500 selection:text-white flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-clone text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-base sm:text-lg tracking-tight text-white block leading-none">เกมสุ่มป้ายคำศัพท์</span>
+                    <span class="text-xs text-slate-400 font-medium">45s Word Card Randomizer</span>
+                </div>
+            </a>
+
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <a href="index.html" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-book-open text-red-400"></i>
+                    <span>ใบความรู้</span>
+                </a>
+                <a href="game.html" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-truck-medical text-indigo-400"></i>
+                    <span>เกมกู้ภัย</span>
+                </a>
+                <a href="game2.html" class="px-3 py-2 rounded-xl font-extrabold text-xs sm:text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 border border-amber-300 flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-clone"></i>
+                    <span>สุ่มป้ายคำศัพท์</span>
+                </a>
+                <button id="soundToggleBtn" onclick="toggleSound()" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+                    <span class="hidden md:inline" id="soundText">เสียง: เปิด</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl w-full mx-auto px-4 py-6 md:py-10 flex-1 flex flex-col justify-center">
+
+        <!-- Game Header & Options -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-white flex items-center gap-2">
+                    <span>🎴 สุ่มป้ายคำศัพท์ฉุกเฉิน</span>
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-400">ทายคำศัพท์หรือใบ้คำภายในเวลา 45 วินาที เมื่อหมดเวลาจะรีเซ็ตการสุ่มใหม่ทันที!</p>
+            </div>
+
+            <!-- Toggle Thai Meaning Visibility -->
+            <button id="toggleHintBtn" onclick="toggleShowMeaning()" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-eye-slash" id="hintEyeIcon"></i>
+                <span id="hintEyeText">ซ่อนคำแปลภาษาไทย (โหมดทายคำ)</span>
+            </button>
+        </div>
+
+        <!-- Timer & Status Bar -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-5 mb-5 shadow-xl">
+            <div class="grid grid-cols-3 gap-3 items-center mb-3">
+                <!-- Left: Words Remaining / Passed -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 text-center">
+                    <span class="text-[11px] font-bold text-slate-400 block uppercase">ป้ายคำศัพท์ที่เปิดแล้ว</span>
+                    <span id="cardCountDisplay" class="text-2xl sm:text-3xl font-black text-indigo-400">0</span>
+                    <span class="text-xs text-slate-500 font-bold">คำ</span>
+                </div>
+
+                <!-- Center: 45s Countdown Timer -->
+                <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-3 text-center relative overflow-hidden">
+                    <span class="text-[11px] font-bold text-slate-400 block uppercase">เวลาที่เหลือ (TIME)</span>
+                    <div id="timerDisplay" class="text-3xl sm:text-4xl font-black text-emerald-400 leading-tight">
+                        45<span class="text-base font-bold text-slate-400 ml-0.5">s</span>
+                    </div>
+                </div>
+
+                <!-- Right: Correct / Score Counter -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 text-center">
+                    <span class="text-[11px] font-bold text-slate-400 block uppercase">จำนวนคำที่ผ่าน/ข้าม</span>
+                    <span id="passCountDisplay" class="text-2xl sm:text-3xl font-black text-amber-400">0</span>
+                    <span class="text-xs text-slate-500 font-bold">ครั้ง</span>
+                </div>
+            </div>
+
+            <!-- Smooth Timer Progress Bar -->
+            <div class="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                <div id="timerBar" class="h-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-red-500 transition-all duration-300" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MAIN WORD SIGN / CARD DISPLAY AREA         -->
+        <!-- ========================================== -->
+        <div class="relative bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-slate-700 rounded-[32px] p-6 sm:p-10 min-h-[340px] sm:min-h-[380px] flex flex-col items-center justify-center text-center shadow-2xl overflow-hidden mb-6">
+            
+            <!-- Decorative Corner Badges -->
+            <div class="absolute top-4 left-5 flex items-center gap-2">
+                <span id="deckStatusBadge" class="bg-slate-950/80 text-slate-300 border border-slate-700 text-xs font-extrabold px-3 py-1 rounded-full">
+                    กองการ์ดพร้อมสุ่ม 10 คำ
+                </span>
+            </div>
+
+            <button id="speakCardBtn" onclick="speakCurrentCard()" class="hidden absolute top-4 right-5 w-11 h-11 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg items-center justify-center transition transform hover:scale-105" title="ฟังเสียงอ่านคำศัพท์">
+                <i class="fa-solid fa-volume-high text-lg"></i>
+            </button>
+
+            <!-- STATE 1: IDLE / READY TO START / TIME'S UP OVERLAY -->
+            <div id="startStateBox" class="flex flex-col items-center justify-center max-w-md mx-auto py-4">
+                <div id="stateIconBox" class="w-20 h-20 rounded-3xl bg-gradient-to-br from-red-500 to-amber-500 flex items-center justify-center text-4xl text-white shadow-2xl mb-4">
+                    <i class="fa-solid fa-shuffle"></i>
+                </div>
+                <h2 id="stateTitle" class="text-3xl sm:text-4xl font-black text-white mb-2">
+                    พร้อมสุ่มป้ายคำศัพท์!
+                </h2>
+                <p id="stateSubtitle" class="text-slate-300 text-sm sm:text-base mb-6">
+                    มีเวลาทั้งหมด <strong class="text-yellow-300">45 วินาที</strong> กดปุ่ม <strong>"ผ่านคำ"</strong> เพื่อสุ่มคำศัพท์ป้ายต่อไปได้เรื่อยๆ เมื่อหมดเวลาจะรีเซ็ตการสุ่มใหม่!
+                </p>
+
+                <!-- START BUTTON -->
+                <button id="startBtn" onclick="startRandomGame()" class="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xl sm:text-2xl px-12 py-4 rounded-full shadow-2xl transition transform hover:scale-105 active:scale-95 flex items-center gap-3 border-2 border-emerald-300">
+                    <i class="fa-solid fa-play"></i>
+                    <span id="startBtnText">START (เริ่มจับเวลา 45 วิ)</span>
+                </button>
+            </div>
+
+            <!-- STATE 2: ACTIVE RANDOM WORD SIGN -->
+            <div id="activeCardBox" class="hidden w-full flex-col items-center justify-center py-4">
+                <!-- Emoji / Icon -->
+                <div id="wordIcon" class="text-6xl sm:text-7xl mb-4 select-none drop-shadow-lg">
+                    🚑
+                </div>
+
+                <!-- Giant English Word Sign -->
+                <div class="bg-white text-slate-900 px-8 py-5 rounded-3xl shadow-xl border-4 border-slate-200 inline-block min-w-[260px] sm:min-w-[360px] mb-4">
+                    <span id="wordPos" class="text-xs font-extrabold uppercase tracking-widest text-red-600 block mb-1">NOUN (คำนาม)</span>
+                    <h2 id="wordText" class="text-4xl sm:text-6xl font-black tracking-tight text-slate-900">
+                        Ambulance
+                    </h2>
+                    <p id="wordPronun" class="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+                        /ˈæm.bjə.ləns/ • แอม-บิว-เลินซ์
+                    </p>
+                </div>
+
+                <!-- Thai Meaning Box (Can be shown or hidden/toggled) -->
+                <div id="meaningContainer" onclick="revealCurrentMeaning()" class="cursor-pointer mt-1">
+                    <div id="meaningText" class="bg-indigo-600/30 border border-indigo-400/40 text-indigo-200 font-extrabold text-xl sm:text-2xl px-6 py-2 rounded-2xl inline-block transition">
+                        รถพยาบาล
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ACTION CONTROLS: PASS / NEXT WORD & RESET  -->
+        <!-- ========================================== -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <!-- Big "กดผ่านคำ (PASS / NEXT WORD)" Button -->
+            <button id="passBtn" onclick="passWord()" disabled class="sm:col-span-8 py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 disabled:opacity-40 disabled:pointer-events-none text-slate-950 font-black text-xl sm:text-2xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-3 border-2 border-yellow-300/60">
+                <i class="fa-solid fa-forward-step text-2xl"></i>
+                <span>กดผ่านคำ / สุ่มคำต่อไป (PASS)</span>
+            </button>
+
+            <!-- Manual Reset Button -->
+            <button id="resetBtn" onclick="resetGame(false)" class="sm:col-span-4 py-4 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-base border border-slate-700 shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-right text-red-400"></i>
+                <span>รีเซ็ตการสุ่มใหม่</span>
+            </button>
+        </div>
+
+        <p class="text-center text-xs text-slate-500 mt-4">
+            <i class="fa-regular fa-keyboard mr-1"></i> ทิป: สามารถกดปุ่ม <kbd class="bg-slate-800 px-2 py-0.5 rounded border border-slate-700 text-slate-300">Spacebar</kbd> หรือ <kbd class="bg-slate-800 px-2 py-0.5 rounded border border-slate-700 text-slate-300">Enter</kbd> เพื่อกดผ่านคำได้อย่างรวดเร็ว!
+        </p>
+
+        <!-- History of Words Shown in Current Round -->
+        <div id="historySection" class="mt-6 bg-slate-900/70 border border-slate-800 rounded-2xl p-4">
+            <div class="text-xs font-bold text-slate-400 mb-2 flex items-center justify-between">
+                <span><i class="fa-solid fa-clock-rotate-left mr-1 text-indigo-400"></i> ประวัติคำศัพท์ที่สุ่มออกมาในรอบนี้ (คลิกเพื่อฟังเสียง):</span>
+                <span id="historyCountText" class="text-slate-500">0 คำ</span>
+            </div>
+            <div id="historyList" class="flex flex-wrap gap-2 min-h-[32px] items-center text-xs text-slate-500">
+                ยังไม่มีคำศัพท์ที่ถูกสุ่ม กดปุ่ม START เพื่อเริ่มเกม!
+            </div>
+        </div>
+
+        <!-- Bottom Quick Navigation Buttons (เชื่อมโยงทั้ง 3 ไฟล์) -->
+        <div class="mt-6 pt-5 border-t border-slate-800 flex flex-wrap items-center justify-center gap-3">
+            <a href="index.html" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-2 transition">
+                <i class="fa-solid fa-book-open text-red-400"></i>
+                <span>1. หน้าใบความรู้ (index.html)</span>
+            </a>
+            <a href="game.html" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 flex items-center gap-2 transition">
+                <i class="fa-solid fa-truck-medical"></i>
+                <span>2. เกมรถพยาบาลกู้ภัย (game.html)</span>
+            </a>
+            <a href="game2.html" class="px-4 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm bg-amber-500 text-slate-950 flex items-center gap-2 shadow">
+                <i class="fa-solid fa-clone"></i>
+                <span>3. เกมสุ่มป้ายคำศัพท์ (game2.html)</span>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- SCRIPT: 45s RANDOM WORD CARD GAME          -->
+    <!-- ========================================== -->
+    <script>
+        const vocabularyDeck = [
+            { word: "Accident", pos: "Noun (คำนาม)", ipa: "/ˈæk.sɪ.dənt/", pronun: "แอ๊ค-ซิ-เดินท์", thai: "อุบัติเหตุ", icon: "🚗💥" },
+            { word: "Fire", pos: "Noun (คำนาม)", ipa: "/faɪər/", pronun: "ไฟ-เออะ", thai: "ไฟไหม้ / เพลิงไหม้", icon: "🔥" },
+            { word: "Earthquake", pos: "Noun (คำนาม)", ipa: "/ˈɜːθ.kweɪk/", pronun: "เอิร์ธ-เควก", thai: "แผ่นดินไหว", icon: "🏚️🫨" },
+            { word: "Flood", pos: "Noun (คำนาม)", ipa: "/flʌd/", pronun: "ฟลัด", thai: "น้ำท่วม", icon: "🌊🏘️" },
+            { word: "Ambulance", pos: "Noun (คำนาม)", ipa: "/ˈæm.bjə.ləns/", pronun: "แอม-บิว-เลินซ์", thai: "รถพยาบาล", icon: "🚑" },
+            { word: "Police", pos: "Noun (คำนาม)", ipa: "/pəˈliːs/", pronun: "พะ-ลีซ", thai: "ตำรวจ", icon: "🚓👮" },
+            { word: "Firefighter", pos: "Noun (คำนาม)", ipa: "/ˈfaɪəˌfaɪ.tər/", pronun: "ไฟ-เออะ-ไฟ-เทอะ", thai: "พนักงานดับเพลิง", icon: "🚒👨‍🚒" },
+            { word: "Emergency", pos: "Noun (คำนาม)", ipa: "/ɪˈmɜː.dʒən.si/", pronun: "อิ-เมอร์-เจิน-ซี", thai: "เหตุฉุกเฉิน", icon: "🆘☎️" },
+            { word: "Rescue", pos: "Verb / Noun", ipa: "/ˈres.kjuː/", pronun: "เรส-คิว", thai: "กู้ภัย, ช่วยเหลือ", icon: "🛟🚁" },
+            { word: "Injured", pos: "Adjective (คำคุณศัพท์)", ipa: "/ˈɪn.dʒəd/", pronun: "อิน-เจิร์ด", thai: "ได้รับบาดเจ็บ", icon: "🤕🩹" }
+        ];
+
+        const GAME_DURATION = 45; // 45 วินาทีตามโจทย์
+        let timeLeft = GAME_DURATION;
+        let timerId = null;
+        let isPlaying = false;
+
+        let shuffledPool = [];
+        let currentCard = null;
+        let shownCardsCount = 0;
+        let passCount = 0;
+        let historyWords = [];
+        let hideMeaningMode = false;
+
+        // Sound Synthesizer (Web Audio API)
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSfx(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const playTone = (freqStart, freqEnd, startTime, duration, wave = 'sine', vol = 0.25) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = wave;
+                o.frequency.setValueAtTime(freqStart, startTime);
+                if (freqEnd !== freqStart) {
+                    o.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), startTime + duration);
+                }
+                g.gain.setValueAtTime(vol, startTime);
+                g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                o.start(startTime);
+                o.stop(startTime + duration);
+            };
+
+            if (type === 'start') {
+                playTone(440, 587.33, now, 0.1, 'triangle', 0.25);
+                playTone(587.33, 880, now + 0.09, 0.18, 'triangle', 0.3);
+            } else if (type === 'pass') {
+                // เสียงพลิกป้ายคำศัพท์ / กดผ่านคำ
+                playTone(523.25, 783.99, now, 0.08, 'sine', 0.24);
+                playTone(783.99, 1046.5, now + 0.06, 0.12, 'triangle', 0.26);
+            } else if (type === 'tick') {
+                // เสียงเตือนวินาทีสุดท้าย
+                playTone(880, 880, now, 0.05, 'sine', 0.15);
+            } else if (type === 'timeup') {
+                // เสียงกริ่งหมดเวลา 45 วินาที
+                playTone(659.25, 523.25, now, 0.15, 'sawtooth', 0.25);
+                playTone(523.25, 392.00, now + 0.15, 0.15, 'sawtooth', 0.25);
+                playTone(392.00, 261.63, now + 0.30, 0.35, 'sawtooth', 0.30);
+            }
+        }
+
+        function speakText(text) {
+            if (!soundEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.92;
+            window.speechSynthesis.speak(u);
+        }
+
+        function speakCurrentCard() {
+            if (currentCard) speakText(currentCard.word);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            const text = document.getElementById('soundText');
+            const btn = document.getElementById('soundToggleBtn');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                text.textContent = 'เสียง: เปิด';
+                btn.classList.replace('text-slate-400', 'text-emerald-400');
+            } else {
+                window.speechSynthesis && window.speechSynthesis.cancel();
+                icon.className = 'fa-solid fa-volume-xmark';
+                text.textContent = 'เสียง: ปิด';
+                btn.classList.replace('text-emerald-400', 'text-slate-400');
+            }
+        }
+
+        // ฟังก์ชันสับไพ่คำศัพท์ใหม่ (Fisher-Yates Shuffle)
+        function createShuffledDeck() {
+            const copy = [...vocabularyDeck];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            // ป้องกันคำแรกของกองใหม่ซ้ำกับคำสุดท้ายของกองเก่า
+            if (currentCard && copy[0].word === currentCard.word && copy.length > 1) {
+                [copy[0], copy[1]] = [copy[1], copy[0]];
+            }
+            return copy;
+        }
+
+        // เริ่มเกมจับเวลา 45 วินาที
+        function startRandomGame() {
+            initAudio();
+            playSfx('start');
+
+            clearInterval(timerId);
+            timeLeft = GAME_DURATION;
+            isPlaying = true;
+            shownCardsCount = 0;
+            passCount = 0;
+            historyWords = [];
+            currentCard = null;
+            shuffledPool = createShuffledDeck();
+
+            // Update UI States
+            document.getElementById('startStateBox').classList.add('hidden');
+            const activeBox = document.getElementById('activeCardBox');
+            activeBox.classList.remove('hidden');
+            activeBox.classList.add('flex');
+
+            const speakBtn = document.getElementById('speakCardBtn');
+            speakBtn.classList.remove('hidden');
+            speakBtn.classList.add('flex');
+
+            document.getElementById('passBtn').disabled = false;
+            document.getElementById('passCountDisplay').textContent = passCount;
+
+            updateTimerUI();
+            drawNextRandomCard();
+
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+
+                if (timeLeft <= 10 && timeLeft > 0) {
+                    playSfx('tick');
+                }
+
+                if (timeLeft <= 0) {
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        // สุ่มป้ายคำศัพท์ใบถัดไป
+        function drawNextRandomCard() {
+            if (shuffledPool.length === 0) {
+                // หากสุ่มครบ 10 คำแล้ว ให้สับกองใหม่โดยอัตโนมัติเพื่อให้เล่นต่อได้จนหมดเวลา 45 วินาที
+                shuffledPool = createShuffledDeck();
+            }
+
+            currentCard = shuffledPool.shift();
+            shownCardsCount++;
+
+            // Render Card Content
+            const activeBox = document.getElementById('activeCardBox');
+            activeBox.classList.remove('card-pop-anim');
+            void activeBox.offsetWidth;
+            activeBox.classList.add('card-pop-anim');
+
+            document.getElementById('wordIcon').textContent = currentCard.icon;
+            document.getElementById('wordPos').textContent = currentCard.pos;
+            document.getElementById('wordText').textContent = currentCard.word;
+            document.getElementById('wordPronun').textContent = `${currentCard.ipa} • อ่านว่า: ${currentCard.pronun}`;
+
+            const meaningEl = document.getElementById('meaningText');
+            if (hideMeaningMode) {
+                meaningEl.textContent = '👁️ คลิกเพื่อดูคำแปลภาษาไทย';
+                meaningEl.className = 'bg-slate-700/60 border border-slate-600 text-slate-300 font-bold text-base px-5 py-2 rounded-2xl inline-block transition';
+            } else {
+                meaningEl.textContent = currentCard.thai;
+                meaningEl.className = 'bg-indigo-600/30 border border-indigo-400/40 text-indigo-200 font-extrabold text-xl sm:text-2xl px-6 py-2 rounded-2xl inline-block transition';
+            }
+
+            document.getElementById('cardCountDisplay').textContent = shownCardsCount;
+            document.getElementById('deckStatusBadge').textContent = `สุ่มคำที่ #${shownCardsCount} (เหลือในกอง ${shuffledPool.length} คำ)`;
+
+            // Add to history
+            historyWords.push(currentCard);
+            renderHistory();
+        }
+
+        // ปุ่มกดผ่านคำ (PASS / NEXT WORD)
+        function passWord() {
+            if (!isPlaying) return;
+            passCount++;
+            document.getElementById('passCountDisplay').textContent = passCount;
+            playSfx('pass');
+            drawNextRandomCard();
+        }
+
+        // เมื่อหมดเวลา 45 วินาที -> รีเซ็ตการสุ่มใหม่ทันที
+        function handleTimeUp() {
+            playSfx('timeup');
+            resetGame(true);
+        }
+
+        // ฟังก์ชันรีเซ็ตการสุ่มใหม่ (ทั้งกรณีหมดเวลา 45 วินาที และกดรีเซ็ตเอง)
+        function resetGame(isTimeUp = false) {
+            clearInterval(timerId);
+            isPlaying = false;
+            timeLeft = GAME_DURATION;
+            currentCard = null;
+            // รีเซ็ตการสุ่มกองการ์ดใหม่ทั้งหมด
+            shuffledPool = createShuffledDeck();
+
+            updateTimerUI();
+
+            // ซ่อนป้ายคำศัพท์ กลับไปหน้าพร้อมเริ่มใหม่
+            const activeBox = document.getElementById('activeCardBox');
+            activeBox.classList.add('hidden');
+            activeBox.classList.remove('flex');
+
+            const speakBtn = document.getElementById('speakCardBtn');
+            speakBtn.classList.add('hidden');
+            speakBtn.classList.remove('flex');
+
+            document.getElementById('passBtn').disabled = true;
+            document.getElementById('startStateBox').classList.remove('hidden');
+            document.getElementById('deckStatusBadge').textContent = 'รีเซ็ตการสุ่มคำศัพท์ใหม่เรียบร้อย (10 คำ)';
+
+            const titleEl = document.getElementById('stateTitle');
+            const subEl = document.getElementById('stateSubtitle');
+            const startBtnText = document.getElementById('startBtnText');
+
+            if (isTimeUp) {
+                titleEl.innerHTML = `<span class="text-amber-400">⏰ หมดเวลา 45 วินาที!</span>`;
+                subEl.innerHTML = `รอบนี้คุณเปิดป้ายไปทั้งหมด <strong class="text-indigo-300 text-lg">${shownCardsCount} คำ</strong> (กดผ่าน ${passCount} ครั้ง)<br><span class="text-emerald-400 font-bold">ระบบได้รีเซ็ตการสุ่มคำศัพท์ใหม่เรียบร้อยแล้ว!</span>`;
+                startBtnText.textContent = 'START (เริ่มสุ่มรอบใหม่ 45 วิ)';
+            } else {
+                titleEl.textContent = 'รีเซ็ตการสุ่มใหม่แล้ว!';
+                subEl.innerHTML = `กองป้ายคำศัพท์ถูกสับใหม่และเวลาถูกรีเซ็ตกลับเป็น <strong class="text-yellow-300">45 วินาที</strong> พร้อมเริ่มเล่นรอบใหม่!`;
+                startBtnText.textContent = 'START (เริ่มจับเวลา 45 วิ)';
+                shownCardsCount = 0;
+                passCount = 0;
+                historyWords = [];
+                document.getElementById('cardCountDisplay').textContent = '0';
+                document.getElementById('passCountDisplay').textContent = '0';
+                renderHistory();
+            }
+        }
+
+        function updateTimerUI() {
+            const timerEl = document.getElementById('timerDisplay');
+            const barEl = document.getElementById('timerBar');
+            const pct = Math.max(0, (timeLeft / GAME_DURATION) * 100);
+
+            timerEl.innerHTML = `${timeLeft}<span class="text-base font-bold text-slate-400 ml-0.5">s</span>`;
+            barEl.style.width = `${pct}%`;
+
+            if (timeLeft <= 10 && isPlaying) {
+                timerEl.className = 'text-3xl sm:text-4xl font-black text-red-500 leading-tight urgent-timer';
+            } else {
+                timerEl.className = 'text-3xl sm:text-4xl font-black text-emerald-400 leading-tight';
+            }
+        }
+
+        function toggleShowMeaning() {
+            hideMeaningMode = !hideMeaningMode;
+            const icon = document.getElementById('hintEyeIcon');
+            const text = document.getElementById('hintEyeText');
+
+            if (hideMeaningMode) {
+                icon.className = 'fa-solid fa-eye';
+                text.textContent = 'แสดงคำแปลภาษาไทย';
+            } else {
+                icon.className = 'fa-solid fa-eye-slash';
+                text.textContent = 'ซ่อนคำแปลภาษาไทย (โหมดทายคำ)';
+            }
+
+            if (isPlaying && currentCard) {
+                const meaningEl = document.getElementById('meaningText');
+                if (hideMeaningMode) {
+                    meaningEl.textContent = '👁️ คลิกเพื่อดูคำแปลภาษาไทย';
+                    meaningEl.className = 'bg-slate-700/60 border border-slate-600 text-slate-300 font-bold text-base px-5 py-2 rounded-2xl inline-block transition';
+                } else {
+                    meaningEl.textContent = currentCard.thai;
+                    meaningEl.className = 'bg-indigo-600/30 border border-indigo-400/40 text-indigo-200 font-extrabold text-xl sm:text-2xl px-6 py-2 rounded-2xl inline-block transition';
+                }
+            }
+        }
+
+        function revealCurrentMeaning() {
+            if (!currentCard) return;
+            const meaningEl = document.getElementById('meaningText');
+            meaningEl.textContent = currentCard.thai;
+            meaningEl.className = 'bg-indigo-600/30 border border-indigo-400/40 text-indigo-200 font-extrabold text-xl sm:text-2xl px-6 py-2 rounded-2xl inline-block transition';
+        }
+
+        function renderHistory() {
+            const listEl = document.getElementById('historyList');
+            const countEl = document.getElementById('historyCountText');
+            countEl.textContent = `${historyWords.length} คำ`;
+
+            if (historyWords.length === 0) {
+                listEl.innerHTML = 'ยังไม่มีคำศัพท์ที่ถูกสุ่ม กดปุ่ม START เพื่อเริ่มเกม!';
+                return;
+            }
+
+            listEl.innerHTML = historyWords.map((item, idx) => `
+                <button onclick="speakText('${item.word}')" class="bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white font-bold px-3 py-1 rounded-xl border border-slate-700 transition flex items-center gap-1.5 text-xs">
+                    <span class="text-slate-400">#${idx + 1}</span>
+                    <span>${item.icon} ${item.word}</span>
+                </button>
+            `).join('');
+        }
+
+        // Keyboard shortcuts: Spacebar or Enter to pass word (or start if idle)
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.key === 'Enter' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (isPlaying) {
+                    passWord();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
